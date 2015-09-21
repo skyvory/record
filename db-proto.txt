@@ -1,0 +1,42 @@
+vn
+title_en
+title_jp
+hashtag
+developer
+date_release
+date_start
+date_end
+story
+naki
+nuki
+graphic
+score
+notes
+	interface
+	general
+	setting
+	other_chara
+	story
+	route
+	bgm
+	terminology
+	timescape
+chara
+	kanji
+	betsumyou
+	yobikata
+	note
+	mark [1,2,0]
+	snapshot [sprite screenshot of the chara]
+archive_savedata
+date_created
+date_modified
+
+developer
+name_en
+name_jp
+
+stock
+name
+status [exist, wishlist, read]
+queue_sequence
