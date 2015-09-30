@@ -11,6 +11,20 @@
 |
 */
 
+Route::model('task', 'Task');
+Route::model('projects', 'Project');
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::resource('projects', 'ProjectsController');
+//Route::resource('task', 'TasksController');
+Route::resource('projects.tasks', 'TasksController');
+
+Route::bind('tasks', function($value, $route) {
+	return App\Task::whereSlug($value)->first();
+});
+Route::bind('projects', function($value, $route) {
+	return App\Project::whereSlug($value)->first();
 });
