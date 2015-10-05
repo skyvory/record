@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Posts;
 use App\User;
 use Redirect;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\PostFormRequest;
 
 class PostController extends Controller

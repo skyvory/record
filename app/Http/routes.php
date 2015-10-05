@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    // return view('welcome');
-	//return HomeController::showWelcome();
-});
+// Route::get('/', function () {
+//     // return view('welcome');
+// 	return HomeController::showWelcome();
+// });
 
 Route::get('/helloworld', 'HelloWorldController@index');
 
