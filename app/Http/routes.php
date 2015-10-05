@@ -12,5 +12,15 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+	View:;make('index');
 });
+
+Route::group(array('prefix' => 'api'), function() {
+	Route::resource('comments', 'CommentController',
+		array('only' => array('index', 'store', 'destroy')));
+});
+
+// App::missing(function($exception) {
+// 	return View::make('index');
+// });
