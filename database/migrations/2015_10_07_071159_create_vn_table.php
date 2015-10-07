@@ -18,8 +18,8 @@ class CreateVnTable extends Migration
 			$table->string('title_jp')->nullable()->default('');
 			$table->string('hashtag')->nullable()->default('');
 			$table->integer('developer_id')->unsigned()->default(0);
-			$table->foreign('developer_id')->references('id')->on('developers')->onDelete('cascade');
-			$table->date('date_release')->nullable()->default('');
+			// $table->foreign('developer_id')->references('id')->on('developers')->onDelete('cascade');
+			$table->date('date_release')->nullable();
 			$table->timestamps();
 		});
 	}

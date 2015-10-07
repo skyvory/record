@@ -15,12 +15,12 @@ class CreateCharactersTable extends Migration
         Schema::create('characters', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('vn_id')->unsigned();
-            $table->foreign('vn_id')->references('vn')->on('id')->onDelete('cascade');
+            // $table->foreign('vn_id')->references('vn')->on('id')->onDelete('cascade');
             $table->string('kanji')->nullable()->default('');
             $table->string('betsumyou')->nullable()->default('');
             $table->string('yobikata')->nullable()->default('');
-            $table->smallInteger('birthmonth')->nullable()->default('');
-            $table->smallInteger('birthday')->nullable()->default('');
+            $table->smallInteger('birthmonth')->nullable();
+            $table->smallInteger('birthday')->nullable();
             $table->string('note')->nullable()->default('');
             $table->char('mark')->nullable()->default('');
             $table->timestamps();

@@ -16,9 +16,9 @@ class CreateStocksTable extends Migration
             $table->increments('id');
             $table->string('title')->default('');
             $table->string('status')->default('unknown');
-            $table->integer('queue_sequence')->unsigned()->nullable()->default('');
+            $table->integer('queue_sequence')->unsigned()->nullable();
             $table->timestamps();
-        })
+        });
     }
 
     /**

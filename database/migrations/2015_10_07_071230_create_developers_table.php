@@ -16,8 +16,8 @@ class CreateDevelopersTable extends Migration
 			$table->increments('id');
 			$table->string('name_en')->nullable()->default('');
 			$table->string('name_jp')->nullable()->default('');
-			timestamps();
-		})
+			$table->timestamps();
+		});
 	}
 
 	/**
