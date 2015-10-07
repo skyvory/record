@@ -5,6 +5,8 @@ title_jp
 hashtag
 developer_id
 date_release
+created_at
+updated_at
 
 developers
 id
@@ -38,6 +40,8 @@ bgm
 terminology
 timescape
 quote
+created_at
+updated_at
 
 characters
 id
@@ -48,9 +52,13 @@ yobikata
 birthdate
 note
 mark [A-C]
+created_at
+updated_at
 
 stocks
 id
 title
 status [exist, wishlist, read]
 queue_sequence
+created_at
+updated_at
