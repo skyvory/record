@@ -10,6 +10,7 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 use App\User;
+use Log;
 
 class AuthenticateController extends Controller
 {
@@ -96,7 +97,15 @@ class AuthenticateController extends Controller
 	}
 
 	public function authenticate(Request $request) {
-		$credentials = $request->only('email', 'password');
+		// prioritize username over email, only use either email or username as auth parameter
+		Log::info('testing log function');
+		$credentials = [];
+		if($request->has('username')) {
+			$credentials = $request->only('username', 'password');
+		}
+		else if($request->has('email')) {
+			$credentials = $request->only('email', 'password');
+		}
 		try {
 			// verufy the credentials and create a token for the user
 			if(!$token = JWTAuth::attempt($credentials)) {
