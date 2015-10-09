@@ -16,6 +16,7 @@ class CreateNotesTable extends Migration
             $table->increments('id');
             $table->integer('vn_id')->unsigned();
             // $table->foreign('vn_id')->references('vn')->on('id')->onDelete('cascade');
+            $table->integer('user_id')->unsigned();
             $table->string('interface')->nullable()->default('');
             $table->string('general')->nullable()->default('');
             $table->string('setting')->nullable()->default('');

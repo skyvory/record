@@ -14,6 +14,7 @@ class CreateStocksTable extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned();
             $table->string('title')->default('');
             $table->string('status')->default('unknown');
             $table->integer('queue_sequence')->unsigned()->nullable();

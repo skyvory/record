@@ -16,6 +16,7 @@ class CreateAssessmentsTable extends Migration
 			$table->increments('id');
 			$table->integer('vn_id')->unsigned();
 			// $table->foreign('vn_id')->references('id')->on('vn')->onDelete('cascade');
+			$table->integer('user_id')->unsigned();
 			$table->datetime('date_start')->nullable();
 			$table->datetime('date_end')->nullable();
 			$table->char('score_story')->nullable()->default('');
