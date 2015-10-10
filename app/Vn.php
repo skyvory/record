@@ -17,7 +17,7 @@ class Vn extends Model
 	protected function assessment() {
 		return $this->hasMany('App\Assignment', 'vn_id');
 	}
-	protected function  note() {
+	protected function note() {
 		return $this->hasMany('App\Note', 'vn_id');
 	}
 }
