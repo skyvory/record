@@ -107,7 +107,9 @@ class AuthenticateController extends Controller
 		}
 
 		try {
-			// verufy the credentials and create a token for the user
+			// inject custom claims (payload)
+			$payload = [];
+			// verify the credentials and create a token for the user
 			if(!$token = JWTAuth::attempt($credentials)) {
 				return response()->json(['error' => 'invalid_credentials'], 401);
 			}
