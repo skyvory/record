@@ -160,16 +160,23 @@ class DatabaseSeeder extends Seeder
 		 	],
 		 	[
 		 		'id' => '2',
-		 		'vn_id' => '1',
+		 		'vn_id' => '2',
 		 		'user_id' => '3',
 		 		'date_start' => '2015-01-02 01:23:42',
 		 		'date_end' => null,
 		 	],
 		 	[
 		 		'id' => '3',
-		 		'vn_id' => '1',
+		 		'vn_id' => '3',
 		 		'user_id' => '3',
 		 		'date_start' => '2015-02-02 01:23:42',
+		 		'date_end' => null,
+		 	],
+		 	[
+		 		'id' => '4',
+		 		'vn_id' => '4',
+		 		'user_id' => '3',
+		 		'date_start' => '2016-02-02 01:23:42',
 		 		'date_end' => null,
 		 	],
 		 );
