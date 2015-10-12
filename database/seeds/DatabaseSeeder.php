@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\User;
 use App\Vn;
 use App\Developer;
+use App\Assessment;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,18 +23,21 @@ class DatabaseSeeder extends Seeder
 		DB::table('users')->delete();
 		 $users = array(
 				[
+					'id' => '1',
 					'name' => 'God',
 					'username' => 'god',
-					'email' => 'skyvory@hotmail.com',
+					'email' => 'summerdream358@gmail.com',
 					'password' => Hash::make('kamisama')
 				],
 				[
+					'id' => '2',
 					'name' => 'Skyvory',
 					'username' => 'skyvory',
-					'email' => 're@outlook.sg',
+					'email' => 'skyvory@hotmail.com',
 					'password' => Hash::make('svry')
 				],
 				[
+					'id' => '3',
 					'name' => 'sv',
 					'username' => 'sv',
 					'email' => 'sv@sv.com',
@@ -61,6 +65,7 @@ class DatabaseSeeder extends Seeder
 		 DB::table('vn')->delete();
 		 $vn = array(
 		 	[
+		 		'id' => '1',
 		 		'title_en' => 'version test alpha',
 		 		'title_jp' => 'alpha test verson',
 		 		'hashtag' => 'alpha',
@@ -68,6 +73,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '2',
 		 		'title_en' => 'version test beta',
 		 		'title_jp' => 'beta test verson',
 		 		'hashtag' => 'beta',
@@ -75,6 +81,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '3',
 		 		'title_en' => 'version test charlie',
 		 		'title_jp' => 'charlie test verson',
 		 		'hashtag' => 'charlie',
@@ -82,6 +89,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '4',
 		 		'title_en' => 'version test delta',
 		 		'title_jp' => 'delta test verson',
 		 		'hashtag' => 'delta',
@@ -89,6 +97,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '5',
 		 		'title_en' => 'version test echo',
 		 		'title_jp' => 'echo test verson',
 		 		'hashtag' => 'echo',
@@ -96,6 +105,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '6',
 		 		'title_en' => 'version test foxtrot',
 		 		'title_jp' => 'foxtrot test verson',
 		 		'hashtag' => 'foxtrot',
@@ -103,6 +113,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '7',
 		 		'title_en' => 'version test golf',
 		 		'title_jp' => 'golf test verson',
 		 		'hashtag' => 'golf',
@@ -110,6 +121,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '8',
 		 		'title_en' => 'version test hotel',
 		 		'title_jp' => 'hotel test verson',
 		 		'hashtag' => 'hotel',
@@ -117,6 +129,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '9',
 		 		'title_en' => 'version test indo',
 		 		'title_jp' => 'indo test verson',
 		 		'hashtag' => 'indo',
@@ -124,6 +137,7 @@ class DatabaseSeeder extends Seeder
 		 		'date_release' => '2015-06-06 13:23:03'
 		 	],
 		 	[
+		 		'id' => '10',
 		 		'title_en' => 'version test juliet',
 		 		'title_jp' => 'juliet test verson',
 		 		'hashtag' => 'juliet',
@@ -133,6 +147,34 @@ class DatabaseSeeder extends Seeder
 		 );
 		 foreach($vn as $v) {
 		 	Vn::create($v);
+		 }
+
+		 DB::table('assessments')->delete();
+		 $assessments = array(
+		 	[
+		 		'id' => '1',
+		 		'vn_id' => '1',
+		 		'user_id' => '3',
+		 		'date_start' => '2015-01-01 01:23:42',
+		 		'date_end' => null,
+		 	],
+		 	[
+		 		'id' => '2',
+		 		'vn_id' => '1',
+		 		'user_id' => '3',
+		 		'date_start' => '2015-01-02 01:23:42',
+		 		'date_end' => null,
+		 	],
+		 	[
+		 		'id' => '3',
+		 		'vn_id' => '1',
+		 		'user_id' => '3',
+		 		'date_start' => '2015-02-02 01:23:42',
+		 		'date_end' => null,
+		 	],
+		 );
+		 foreach($assessments as $assessment) {
+		 	Assessment::create($assessment);
 		 }
 
 		Model::reguard();
