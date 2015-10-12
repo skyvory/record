@@ -16,12 +16,13 @@ Route::get('/', function () {
 });
 
 Route::group(['prefix' => 'api'], function() {
+	// user authentication mean
 	Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
 	Route::post('authenticate', 'AuthenticateController@authenticate');
+	// return authenticated user details
 	Route::get('who', 'AuthenticateController@who');
-	Route::group(['prefix' => 'vn'], function() {
-		Route::post('list', 'VnController@index');
-		Route::post('{id}', 'VnController@show')->where('id', '[0-9]+');
-		Route::post('{id}/edit', 'VnController@edit');
-	});
+	// resource utilize default handle of action provided by resource controller
+	Route::resource('vn', 'VnController', ['except' => ['create', 'edit']]);
+	Route::resource('user', 'UserController', ['except' => ['create', 'edit']]);
 });
+
