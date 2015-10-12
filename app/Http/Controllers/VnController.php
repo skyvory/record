@@ -26,7 +26,7 @@ class VnController extends Controller
 	public function index()
 	{
 		$title = "vN List";
-		$vn = Vn::where('id', '>', '0')->orderBy('created_at', 'desc')->paginate(5);
+		$vn = Vn::where('id', '>', '0')->orderBy('created_at', 'desc')->paginate(10);
 		// $vn = Vn::all();
 		return $vn->toJson();
 	}
@@ -60,7 +60,10 @@ class VnController extends Controller
 			$vn->hashtag = $request->post('hashtag');
 			$vn->developer_id = $request->post('developer_id');
 			$vn->date_release = $request->post('date_release');
-			$vn->save();
+			$exec = $vn->save();
+			if($exec) {
+				return response()->json(["status" => "success"]);
+			}
 		}
 	}
 
@@ -74,19 +77,27 @@ class VnController extends Controller
 	{
 		try {
 			$vn = Vn::find($id);
-			$status_code = 200;
-			$response = [
-				'vn' => [
-					'id' => $id,
-					'title_en' => $vn->title_en,
-					'title_jp' => $vn->title_jp,
-					'hashtag' => $vn->hashtag,
-					'developer_id' => $vn->developer_id,
-					'date_release' => $vn->date_release,
-					'created_at' => $vn->created_at,
-					'updated_at' => $vn->updated_at,
-				]
-			];
+			if($vn) {
+				$status_code = 200;
+				$response = [
+					'vn' => [
+						'id' => $id,
+						'title_en' => $vn->title_en,
+						'title_jp' => $vn->title_jp,
+						'hashtag' => $vn->hashtag,
+						'developer_id' => $vn->developer_id,
+						'date_release' => $vn->date_release,
+						'created_at' => $vn->created_at,
+						'updated_at' => $vn->updated_at,
+					]
+				];
+			}
+			else {
+				$status_code = 200;
+				$response = [
+					'status' => "vn does not exist",
+				];
+			}
 		}
 		catch(Exception $e) {
 			$response = [
@@ -146,7 +157,10 @@ class VnController extends Controller
 				$date_release = $request->input('date_release');
 				$vn->date_release = $date_release;
 			}
-			$vn->save();
+			$exec = $vn->save();
+			if($exec) {
+				return response()->json(["status" => "success"]);
+			}
 		}
 
 	}
@@ -157,16 +171,19 @@ class VnController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request, $id)
 	{
 		if($request->user()->isCommon()) {
-			$allow - true;
+			$allow = true;
 		}
 
 		if($allow == true) {
 			$vn = Vn::find($id);
 			if($vn) {
-				$vn->delete();
+				$exec = $vn->delete();
+				if($exec) {
+					return response()->json(["status" => "success"]);
+				}
 			}
 		}
 	}
