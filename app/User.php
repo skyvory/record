@@ -10,6 +10,8 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+use Log;
+
 class User extends Model implements AuthenticatableContract,
 									AuthorizableContract,
 									CanResetPasswordContract
@@ -48,5 +50,21 @@ class User extends Model implements AuthenticatableContract,
 	// user has many stocks
 	protected function stocks() {
 		return $this->hasMany('App\Stocks', 'user_id');
+	}
+
+	protected function isAdmin() {
+		$role = $this->role;
+		if($role == "admin") {
+			return true;
+		}
+		return false;
+	}
+	public function isCommon() {
+		$role = $this->role;
+		// Log::info($role);
+		if($role == "common") {
+			return true;
+		}
+		return false;
 	}
 }
