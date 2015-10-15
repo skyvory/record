@@ -7,6 +7,10 @@ use App\User;
 use App\Vn;
 use App\Developer;
 use App\Assessment;
+use App\Character;
+use App\Note;
+use App\Lineament;
+use App\Stock;
 
 class DatabaseSeeder extends Seeder
 {
@@ -183,6 +187,63 @@ class DatabaseSeeder extends Seeder
 		 foreach($assessments as $assessment) {
 		 	Assessment::create($assessment);
 		 }
+
+		 DB::table('characters')->delete();
+		 $characters = array(
+		 	[
+		 		'id' => '1',
+		 		'vn_id' => '1',
+		 		'kanji' => '恋',
+		 		'betsumyou' => '妹',
+		 		'yobikata' => 'れん',
+		 		'birthmonth' => null,
+		 		'birthday' => null
+		 	],
+		 );
+		 foreach($characters as $character) {
+		 	Character::create($character);
+		 }
+
+		DB::table('lineaments')->delete();
+		$lineaments = array(
+			[
+				'id' => '1',
+				'user_id' => '3',
+				'character_id' => '1',
+				'note' => 'lorem ipsum',
+				'mark' => 'A'
+			],
+		);
+		foreach($lineaments as $llineament) {
+			Lineament::create($llineament);
+		}
+
+		DB::table('notes')->delete();
+		$notes = array(
+			[
+				'id' => '1',
+				'vn_id' => '1',
+				'user_id' => '3',
+				'interface' => 'lorem ipsum metropolis',
+			],
+		);
+		foreach($notes as $note) {
+			Note::create($note);
+		}
+
+		DB::table('stocks')->delete();
+		$stocks = array(
+			[
+				'id' => '1',
+				'user_id' => '3',
+				'title' => 'lorem ipsum minority',
+				'status' => 'wishlist',
+				'queue_sequence' => '1',
+			],
+		);
+		foreach($stocks as $stock) {
+			Stock::create($stock);
+		}
 
 		Model::reguard();
 	}
