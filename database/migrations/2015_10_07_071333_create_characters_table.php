@@ -14,7 +14,7 @@ class CreateCharactersTable extends Migration
 	{
 		Schema::create('characters', function (Blueprint $table) {
 			$table->increments('id');
-			$table->integer('vn_id')->unsigned();
+			$table->integer('vn_id')->unsigned()->nullable();;
 			// $table->foreign('vn_id')->references('vn')->on('id')->onDelete('cascade');
 			$table->string('kanji')->nullable()->default('');
 			$table->string('betsumyou')->nullable()->default('');
