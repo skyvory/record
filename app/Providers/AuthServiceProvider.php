@@ -35,6 +35,8 @@ class AuthServiceProvider extends ServiceProvider
 		$gate->define('add-vn', function($user, $vn) {
 			return $user->role == "common";
 		});
+
+		// assessment define
 		$gate->define('index-assessment', function($user, $assessment) {
 			return $user->role == "common";
 		});
@@ -51,6 +53,20 @@ class AuthServiceProvider extends ServiceProvider
 			return false;
 		});
 		$gate->define('delete-assessment', function($user, $assessment) {
+			return $user->role == "common";
+		});
+
+		// character define
+		$gate->define('store-character', function($user, $character) {
+			return $user->role == "common";
+		});
+		$gate->define('update-character', function($user, $character) {
+			if($user->role == "common" && $user->id == $character->user_id) {
+				return true;
+			}
+			return false;
+		});
+		$gate->define('delete-character', function($user, $character) {
 			return $user->role == "common";
 		});
 	}
