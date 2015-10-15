@@ -22,11 +22,14 @@ Route::group(['prefix' => 'api'], function() {
 	// return authenticated user details
 	Route::get('who', 'AuthenticateController@who');
 	// resource utilize default handle of action provided by resource controller
-	// vn routing
-	Route::resource('vn', 'VnController', ['except' => ['create', 'edit']]);
-	// user routing
+	// resource routing
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit']]);
-	// assessment routing
+	Route::resource('vn', 'VnController', ['except' => ['create', 'edit']]);
 	Route::resource('assessment', 'AssessmentController', ['except' => ['create', 'edit']]);
+	Route::resource('character', 'CharacterController', ['except' => ['create', 'edit']]);
+	Route::resource('developer', 'DeveloperController', ['except' => ['create', 'edit']]);
+	Route::resource('lineament', 'LineamentController', ['except' => ['create', 'edit']]);
+	Route::resource('note', 'NoteController', ['except' => ['create', 'edit']]);
+	Route::resource('stock', 'StockController', ['except' => ['create', 'edit']]);
 });
 
