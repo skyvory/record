@@ -63,6 +63,9 @@ class AssessmentController extends Controller
 		$assessment->score_graphic = $request->post('score_graphic');
 		$assessment->score_all = $request->post('score_all');
 		$assessment->archive_savedata = $request->post('archive_savedata');
+		if(Gate::denies('store-assessment', $assessment)) {
+			abort(403);
+		}
 		$exec = $assessment->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);
