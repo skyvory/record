@@ -52,7 +52,7 @@ class User extends Model implements AuthenticatableContract,
 		return $this->hasMany('App\Stock', 'user_id');
 	}
 	protected function lineament() {
-		return $this->hasMany('App\Lineament')
+		return $this->hasMany('App\Lineament');
 	}
 
 	protected function isAdmin() {
