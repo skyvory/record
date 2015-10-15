@@ -56,7 +56,7 @@ class NoteController extends Controller
 		$note->vn_id = $request->input('vn_id');
 		$note->user_id = $request->user()->id;
 		$note->interface = $request->input('interface');
-		$note->general = $request->input('general');
+		$note->gene = $request->input('gene');
 		$note->setting = $request->input('setting');
 		$note->side_chara = $request->input('side_chara');
 		$note->story = $request->input('story');
@@ -118,7 +118,7 @@ class NoteController extends Controller
 			abort(403);
 		}
 		$note->interface = $request->input('interface');
-		$note->general = $request->input('general');
+		$note->gene = $request->input('gene');
 		$note->setting = $request->input('setting');
 		$note->side_chara = $request->input('side_chara');
 		$note->story = $request->input('story');
