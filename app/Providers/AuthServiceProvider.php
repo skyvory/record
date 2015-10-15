@@ -103,5 +103,28 @@ class AuthServiceProvider extends ServiceProvider
 			}
 			return false;
 		});
+
+		// stock define
+		$gate->define('index-stock', function($user, $stock) {
+			return $user->role == "common";
+		});
+		$gate->define('show-stock', function($user, $stock) {
+			return $user->role == "common";
+		});
+		$gate->define('store-stock', function($user, $stock) {
+			return $user->role == "common";
+		});
+		$gate->define('update-stock', function($user, $stock) {
+			if($user->role == "common" && $user->id == $stock->user_id) {
+				return true;
+			}
+			return false;
+		});
+		$gate->define('delete-stock', function($user, $stock) {
+			if($user->role == "common" && $user->id == $stock->user_id) {
+				return true;
+			}
+			return false;
+		});
 	}
 }
