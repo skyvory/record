@@ -10,5 +10,8 @@ class Character extends Model
 
 		protected function vn() {
 			return $this->belongsTo('App\Vn', 'vn_id');
-		}		
+		}
+		protected function lineament() {
+			return $this->hasMany('App\Lineament', 'id');
+		}
 }
