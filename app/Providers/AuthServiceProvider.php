@@ -53,7 +53,10 @@ class AuthServiceProvider extends ServiceProvider
 			return false;
 		});
 		$gate->define('delete-assessment', function($user, $assessment) {
-			return $user->role == "common";
+			if($user->role == "common" && $user->id == $assessment->user_id) {
+				return true;
+			}
+			return false;
 		});
 
 		// character define
@@ -76,6 +79,29 @@ class AuthServiceProvider extends ServiceProvider
 		});
 		$gate->define('delete-developer', function($user, $developer) {
 			return $user->role == "common";
+		});
+
+		// note define
+		$gate->define('index-note', function($user, $note) {
+			return $user->role == "common";
+		});
+		$gate->define('show-note', function($user, $note) {
+			return $user->role == "common";
+		});
+		$gate->define('store-note', function($user, $note) {
+			return $user->role == "common";
+		});
+		$gate->define('update-note', function($user, $vn, $note) {
+			if($user->role == "common" && $vn->id == $note->vn_id && $user->id == $note->user_id) {
+				return true;
+			}
+			return false;
+		});
+		$gate->define('delete-note', function($user, $note) {
+			if($user->role == "common" && $user->id == $note->user_id) {
+				return true;
+			}
+			return false;
 		});
 	}
 }
