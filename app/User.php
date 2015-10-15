@@ -40,16 +40,19 @@ class User extends Model implements AuthenticatableContract,
 	protected $hidden = ['password', 'remember_token'];
 
 	// user has many assessments
-	protected function assessments() {
-		return $this->hasMany('App\Assessments', 'user_id');
+	protected function assessment() {
+		return $this->hasMany('App\Assessment', 'user_id');
 	}
 	// user has many notes
-	protected function notes() {
-		return $this->hasMany('App\Notes', 'user_id');
+	protected function note() {
+		return $this->hasMany('App\Note', 'user_id');
 	}
 	// user has many stocks
-	protected function stocks() {
-		return $this->hasMany('App\Stocks', 'user_id');
+	protected function stock() {
+		return $this->hasMany('App\Stock', 'user_id');
+	}
+	protected function lineament() {
+		return $this->hasMany('App\Lineament')
 	}
 
 	protected function isAdmin() {
