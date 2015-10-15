@@ -61,12 +61,20 @@ class AuthServiceProvider extends ServiceProvider
 			return $user->role == "common";
 		});
 		$gate->define('update-character', function($user, $character) {
-			if($user->role == "common" && $user->id == $character->user_id) {
-				return true;
-			}
-			return false;
+			return $user->role == "common";
 		});
 		$gate->define('delete-character', function($user, $character) {
+			return $user->role == "common";
+		});
+
+		// developer define
+		$gate->define('store-developer', function($user, $developer) {
+			return $user->role == "common";
+		});
+		$gate->define('update-developer', function($user, $developer) {
+			return $user->role == "common";
+		});
+		$gate->define('delete-developer', function($user, $developer) {
 			return $user->role == "common";
 		});
 	}
