@@ -80,7 +80,7 @@ class VnController extends Controller
 			if($vn) {
 				$status_code = 200;
 				$response = [
-					'vn' => [
+					// 'vn' => [
 						'id' => $id,
 						'title_en' => $vn->title_en,
 						'title_jp' => $vn->title_jp,
@@ -89,7 +89,7 @@ class VnController extends Controller
 						'date_release' => $vn->date_release,
 						'created_at' => $vn->created_at,
 						'updated_at' => $vn->updated_at,
-					]
+					// ]
 				];
 			}
 			else {
