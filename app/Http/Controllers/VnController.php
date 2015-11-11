@@ -26,7 +26,7 @@ class VnController extends Controller
 	public function index()
 	{
 		$title = "vN List";
-		$vn = Vn::where('id', '>', '0')->orderBy('created_at', 'desc')->paginate(10);
+		$vn = Vn::where('id', '>', '0')->orderBy('created_at', 'desc')->paginate(3);
 		// $vn = Vn::all();
 		return $vn->toJson();
 	}
@@ -52,14 +52,17 @@ class VnController extends Controller
 		if($request->user()->isCommon()) {
 			$allow = true;
 		}
+		else {
+			return "xxx";
+		}
 
 		if($allow == true) {
 			$vn = new Vn();
-			$vn->title_en = $request->post('title_en');
-			$vn->title_jp = $request->post('title_jp');
-			$vn->hashtag = $request->post('hashtag');
-			$vn->developer_id = $request->post('developer_id');
-			$vn->date_release = $request->post('date_release');
+			$vn->title_en = $request->input('title_en');
+			$vn->title_jp = $request->input('title_jp');
+			$vn->hashtag = $request->input('hashtag');
+			$vn->developer_id = $request->input('developer_id');
+			$vn->date_release = $request->input('date_release');
 			$exec = $vn->save();
 			if($exec) {
 				return response()->json(["status" => "success"]);

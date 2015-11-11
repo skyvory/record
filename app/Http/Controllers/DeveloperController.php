@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Exception\JWTException;
 
 use Illuminate\Http\Response;
 use Gate;
-use App\Develooper;
+use App\Developer;
 
 class DeveloperController extends Controller
 {
@@ -55,7 +55,7 @@ class DeveloperController extends Controller
 		}
 		$exec = $developer->save();
 		if($exec) {
-			return response()->json(['status' =>> 'success']);
+			return response()->json(['status' => 'success']);
 		}
 	}
 
