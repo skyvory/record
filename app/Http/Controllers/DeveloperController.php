@@ -25,7 +25,7 @@ class DeveloperController extends Controller
 	 */
 	public function index()
 	{
-		$developer = Developer::all()->orderBy('name_en')->paginate(10);
+		$developer = Developer::orderBy('name_en')->paginate(10)->all();;
 		return response()->json($developer);
 	}
 
