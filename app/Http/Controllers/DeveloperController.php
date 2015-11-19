@@ -25,7 +25,7 @@ class DeveloperController extends Controller
 	 */
 	public function index()
 	{
-		$developer = Developer::orderBy('name_en')->paginate(10)->all();;
+		$developer = Developer::orderBy('name_en')->paginate(1);
 		return response()->json($developer);
 	}
 
@@ -48,8 +48,8 @@ class DeveloperController extends Controller
 	public function store(Request $request)
 	{
 		$developer = new Developer();
-		$develoer->name_en = $request->input('name_en');
-		$develoer->name_jp = $request->input('name_jp');
+		$developer->name_en = $request->input('name_en');
+		$developer->name_jp = $request->input('name_jp');
 		if(Gate::denies('store-developer', $developer)) {
 			abort(403);
 		}
@@ -97,8 +97,8 @@ class DeveloperController extends Controller
 		if(Gate::denies('update-developer', $developer)) {
 			abort(403);
 		}
-		$develoer->name_en = $request->input('name_en');
-		$develoer->name_jp = $request->input('name_jp');
+		$developer->name_en = $request->input('name_en');
+		$developer->name_jp = $request->input('name_jp');
 		$exec = $developer->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);
