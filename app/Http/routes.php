@@ -33,3 +33,7 @@ Route::group(['prefix' => 'api'], function() {
 	Route::resource('stock', 'StockController', ['except' => ['create', 'edit']]);
 });
 
+Route::group(['prefix' => 'vndb'], function() {
+	Route::post('/dbstat', 'VndbController@dbstat');
+	Route::post('/vn', 'VndbController@vn');
+});
