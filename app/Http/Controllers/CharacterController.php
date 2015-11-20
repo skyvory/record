@@ -28,7 +28,7 @@ class CharacterController extends Controller
 	public function index()
 	{
 		$user = JWTAuth::parseToken()->authenticate();
-		$character = Character::all()->orderBy('yobikata' 'asc')->paginate(10);
+		$character = Character::orderBy('yobikata', 'asc')->paginate(10);
 		return response()->json($character);
 	}
 
