@@ -21,12 +21,14 @@ class VnController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 *
+	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
 		$title = "vN List";
-		$vn = Vn::where('id', '>', '0')->orderBy('created_at', 'desc')->paginate(3);
+		$q = $request->input('search') ? $request->input('search') : '';
+		$vn = Vn::where('title_en', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate(3);
 		// $vn = Vn::all();
 		return $vn->toJson();
 	}
