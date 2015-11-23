@@ -33,7 +33,7 @@ class VndbController extends Controller
 		$client = new Client();
 		$client->connect();
 		$client->login($username = $request->input('username'), $password = $request->input('password'));
-		$res = $client->sendCommand('get release basic,details,vn,producers (id = ' . (int)$request->input('vndb_id') . ')');
+		$res = $client->sendCommand('get release basic,details,vn,producers (vn = ' . (int)$request->input('vndb_id') . ')');
 		$res_after = json_decode(json_encode($res), true);
 		return response()->json($res_after);
 	}
