@@ -61,7 +61,7 @@ class DeveloperController extends Controller
 		}
 		$exec = $developer->save();
 		if($exec) {
-			return response()->json(['status' => 'success']);
+			return response()->json($developer);
 		}
 	}
 
