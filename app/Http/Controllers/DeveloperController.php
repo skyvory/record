@@ -21,11 +21,17 @@ class DeveloperController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 *
+	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	// developer search parameter find only exact string
+	public function index(Request $request)
 	{
-		$developer = Developer::orderBy('name_en')->paginate(1);
+		if($request->input('name_en')) {
+			$developer = Developer::where('name_en', $request->input('name_en'))->first();
+			return response()->json($developer);
+		}
+		$developer = Developer::orderBy('name_en')->paginate(10);
 		return response()->json($developer);
 	}
 
@@ -121,5 +127,9 @@ class DeveloperController extends Controller
 		if($exec) {
 			return response()->json(['status' => 'success']);
 		}
+	}
+
+	public function search(Request $request) {
+
 	}
 }
