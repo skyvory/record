@@ -53,16 +53,16 @@ class AssessmentController extends Controller
 	public function store(Request $request)
 	{
 		$assessment = new Assessment();
-		$assessment->vn_id = $request->post('vn_id');
+		$assessment->vn_id = $request->input('vn_id');
 		$assessment->user_id = $request->user()->id;
-		$assessment->date_start = $request->post('date_start');
-		$assessment->date_end = $request->post('date_end');
-		$assessment->score_story = $request->post('score_story');
-		$assessment->score_naki = $request->post('score_naki');
-		$assessment->score_nuki = $request->post('score_nuki');
-		$assessment->score_graphic = $request->post('score_graphic');
-		$assessment->score_all = $request->post('score_all');
-		$assessment->archive_savedata = $request->post('archive_savedata');
+		$assessment->date_start = $request->input('date_start');
+		$assessment->date_end = $request->input('date_end');
+		$assessment->score_story = $request->input('score_story');
+		$assessment->score_naki = $request->input('score_naki');
+		$assessment->score_nuki = $request->input('score_nuki');
+		$assessment->score_graphic = $request->input('score_graphic');
+		$assessment->score_all = $request->input('score_all');
+		$assessment->archive_savedata = $request->input('archive_savedata');
 		if(Gate::denies('store-assessment', $assessment)) {
 			abort(403);
 		}
