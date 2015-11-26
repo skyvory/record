@@ -127,7 +127,7 @@ class AssessmentController extends Controller
 		$assessment->archive_savedata = $request->input('archive_savedata');
 		$exec = $assessment->save();
 		if($exec) {
-			return response()->json(["status" => "success"]);
+			return response()->json($assessment);
 		}
 	}
 
