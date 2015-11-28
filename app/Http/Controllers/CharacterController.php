@@ -23,13 +23,26 @@ class CharacterController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 *
+	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		$user = JWTAuth::parseToken()->authenticate();
-		$character = Character::orderBy('yobikata', 'asc')->paginate(10);
-		return response()->json($character);
+		// $user = JWTAuth::parseToken()->authenticate();
+		$vn_id = $request->input('vn_id');
+		if($vn_id != null) {
+			$character = Character::where('vn_id', $vn_id)->orderBy('id')->get();
+		}
+		else {
+			$character = Character::orderBy('yobikata')->paginate(10)->get();
+		}
+
+		// $character = json_decode($character);
+		// $chara = $character->toArray();
+		// $chara = json_encode($character);
+		// var_dump($character);
+		return response()->json(['data' => $character]);
+
 	}
 
 	/**
