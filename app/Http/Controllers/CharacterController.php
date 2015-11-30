@@ -32,16 +32,13 @@ class CharacterController extends Controller
 		$vn_id = $request->input('vn_id');
 		if($vn_id != null) {
 			$character = Character::where('vn_id', $vn_id)->orderBy('id')->get();
+			return response()->json(['data' => $character]);
 		}
 		else {
-			$character = Character::orderBy('yobikata')->paginate(10)->get();
+			$character = Character::orderBy('yobikata')->paginate(10);
+			return response()->json($character);
 		}
 
-		// $character = json_decode($character);
-		// $chara = $character->toArray();
-		// $chara = json_encode($character);
-		// var_dump($character);
-		return response()->json(['data' => $character]);
 
 	}
 
