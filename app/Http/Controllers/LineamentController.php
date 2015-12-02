@@ -51,11 +51,15 @@ class LineamentController extends Controller
 	 */
 	public function store(Request $request)
 	{
+		$check = Lineament::where('user_id', $request->user()->id)->where('character_id', $request->input('character_id'))->first();
+		if($check) {
+			return response()->json(['status' => 'lineament is already exist, use update method to update']);
+		}
 		$lineament = new Lineament();
 		$lineament->user_id = $request->user()->id;
-		$lineament->character_id = $request->post('character_id');
-		$lineament->note = $request->post('note');
-		$lineament->mark = $request->post('mark');
+		$lineament->character_id = $request->input('character_id');
+		$lineament->note = $request->input('note');
+		$lineament->mark = $request->input('mark');
 		if(Gate::denies('store-lineament', $lineament)) {
 			abort(403);
 		}
@@ -103,12 +107,16 @@ class LineamentController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		$lineament = Lineament::find($id);
+		// $user = JWTAuth::parseToken()->authenticate();
+		$lineament = Lineament::where('user_id', $request->user()->id)->where('character_id', $request->input('character_id'))->first();
+		if($lineament->id != $id) {
+			return response()->json(['status' => 'Database fatal conflict! Multiple lineaments on a character detected']);
+		}
 		if(Gate::denies('update-lineament', $lineament)) {
 			abort(403);
 		}
-		$lineament->note = $request->post('note');
-		$lineament->mark = $request->post('mark');
+		$lineament->note = $request->input('note');
+		$lineament->mark = $request->input('mark');
 		$exec = $lineament->save();
 		if($exec) {
 			return response()->json(["status" => "success"]);
