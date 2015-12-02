@@ -12,6 +12,6 @@ class Character extends Model
 			return $this->belongsTo('App\Vn', 'vn_id');
 		}
 		protected function lineament() {
-			return $this->hasMany('App\Lineament', 'id');
+			return $this->hasMany('App\Lineament', 'character_id');
 		}
 }

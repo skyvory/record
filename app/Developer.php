@@ -9,6 +9,6 @@ class Developer extends Model
 		protected $table = 'developers';
 
 		protected function vn() {
-			return $this->hasMany('App\Vn', 'id');
+			return $this->hasMany('App\Vn', 'developer_id');
 		}
 }

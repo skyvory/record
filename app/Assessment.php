@@ -11,9 +11,9 @@ class Assessment extends Model
 	// protected $fillable = ['vn_id', 'user_id', 'date_start', 'date_end', 'score_story', 'score_naki', 'score_nuki', 'score_graphic', 'score_all', 'archive_savedata'];
 
 	protected function user() {
-		return $this->belongsTo('App\User', 'id');
+		return $this->belongsTo('App\User', 'user_id');
 	}
 	protected function vn() {
-		return $this->belongsTo('App\Vn', 'id');
+		return $this->belongsTo('App\Vn', 'vn_id');
 	}
 }

@@ -9,7 +9,7 @@ class Vn extends Model
 	protected $table = 'vn';
 
 	protected function developer() {
-		return $this->belongsTo('App\Developer', 'id');
+		return $this->belongsTo('App\Developer', 'developer_id');
 	}
 	protected function character() {
 		return $this->hasMany('App\Character', 'vn_id');
