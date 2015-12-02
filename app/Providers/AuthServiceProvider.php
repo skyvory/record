@@ -137,8 +137,8 @@ class AuthServiceProvider extends ServiceProvider
 		$gate->define('store-lineament', function($user, $lineament) {
 			return $user->role == "common";
 		});
-		$gate->define('update-lineament', function($user, $character, $lineament) {
-			if($user->role == "common" && $character->id == $lineament->character_id && $user->id == $lineament->user_id) {
+		$gate->define('update-lineament', function($user, $lineament) {
+			if($user->role == "common" && $user->id == $lineament->user_id) {
 				return true;
 			}
 			return false;
