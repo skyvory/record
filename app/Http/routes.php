@@ -37,4 +37,5 @@ Route::group(['prefix' => 'vndb'], function() {
 	Route::post('/dbstat', 'VndbController@dbstat');
 	Route::post('/vn', 'VndbController@vn');
 	Route::post('/release', 'VndbController@release');
+	Route::post('/character', 'VndbController@character');
 });
