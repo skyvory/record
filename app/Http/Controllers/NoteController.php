@@ -78,7 +78,7 @@ class NoteController extends Controller
 		}
 		$exec = $note->save();
 		if($exec) {
-			return response()->json(['status' => 'success']);
+			return response()->json($note);
 		}
 	}
 
