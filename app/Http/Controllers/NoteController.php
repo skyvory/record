@@ -22,12 +22,19 @@ class NoteController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 *
+	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
-		$note = Note::where('user_id', $user->id)->orderBy('date_start', 'desc')->paginate(10);
+		$vn_id = $request->input('vn_id') ? $request->input('vn_id') : null;
+		if($vn_id) {
+			$note = Note::where('user_id', $user->id)->where('vn_id', $vn_id)->first();
+		}
+		else {
+			$note = Note::where('user_id', $user->id)->orderBy('date_start', 'desc')->paginate(10);
+		}
 		if(Gate::denies('index-note', $note)) {
 			abort(403);
 		}
