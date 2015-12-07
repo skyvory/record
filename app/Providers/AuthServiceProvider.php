@@ -91,8 +91,8 @@ class AuthServiceProvider extends ServiceProvider
 		$gate->define('store-note', function($user, $note) {
 			return $user->role == "common";
 		});
-		$gate->define('update-note', function($user, $vn, $note) {
-			if($user->role == "common" && $vn->id == $note->vn_id && $user->id == $note->user_id) {
+		$gate->define('update-note', function($user, $note) {
+			if($user->role == "common" && $user->id == $note->user_id) {
 				return true;
 			}
 			return false;
