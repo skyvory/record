@@ -39,6 +39,16 @@ class NoteController extends Controller
 			abort(403);
 		}
 		$note->interface = htmlentities($note->interface);
+		$note->gene = htmlentities($note->gene);
+		$note->setting = htmlentities($note->setting);
+		$note->side_chara = htmlentities($note->side_chara);
+		$note->story = htmlentities($note->story);
+		$note->route = htmlentities($note->route);
+		$note->bgm = htmlentities($note->bgm);
+		$note->terminology = htmlentities($note->terminology);
+		$note->timescape = htmlentities($note->timescape);
+		$note->quote = htmlentities($note->quote);
+		$note->other = htmlentities($note->other);
 		return response()->json($note);
 	}
 
@@ -125,19 +135,18 @@ class NoteController extends Controller
 		if(Gate::denies('update-note', $note)) {
 			abort(403);
 		}
-		$interface = html_entity_decode($request->input('interface'));
-		$interface = preg_replace('#<br\s*/?>#i', "\n", $interface);
+		$interface = $this->decodeInput($request->input('interface'));
 		$note->interface = $interface;
-		$note->gene = $request->input('gene');
-		$note->setting = $request->input('setting');
-		$note->side_chara = $request->input('side_chara');
-		$note->story = $request->input('story');
-		$note->route = $request->input('route');
-		$note->bgm = $request->input('bgm');
-		$note->terminology = $request->input('terminology');
-		$note->timescape = $request->input('timescape');
-		$note->quote = $request->input('quote');
-		$note->other = $request->input('other');
+		$note->gene = $this->decodeInput($request->input('gene'));
+		$note->setting = $this->decodeInput($request->input('setting'));
+		$note->side_chara = $this->decodeInput($request->input('side_chara'));
+		$note->story = $this->decodeInput($request->input('story'));
+		$note->route = $this->decodeInput($request->input('route'));
+		$note->bgm = $this->decodeInput($request->input('bgm'));
+		$note->terminology = $this->decodeInput($request->input('terminology'));
+		$note->timescape = $this->decodeInput($request->input('timescape'));
+		$note->quote = $this->decodeInput($request->input('quote'));
+		$note->other = $this->decodeInput($request->input('other'));
 		$exec = $note->save();
 		if($exec) {
 			return response()->json(["status" => "success"]);
@@ -160,5 +169,11 @@ class NoteController extends Controller
 		if($exec) {
 			return response()->json(["status" => "success"]);
 		}
+	}
+
+	private function decodeInput($html) {
+		$html = html_entity_decode($html);
+		$html = preg_replace('#<br\s*/?>#i', "\n", $html);
+		return $html;
 	}
 }
