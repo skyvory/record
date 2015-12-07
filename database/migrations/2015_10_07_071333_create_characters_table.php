@@ -21,6 +21,7 @@ class CreateCharactersTable extends Migration
 			$table->string('yobikata')->nullable()->default('');
 			$table->smallInteger('birthmonth')->nullable();
 			$table->smallInteger('birthday')->nullable();
+			$table->string('image')->nullable();
 			$table->timestamps();
 		});
 	}
