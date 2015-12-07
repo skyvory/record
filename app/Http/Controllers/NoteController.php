@@ -38,6 +38,7 @@ class NoteController extends Controller
 		if(Gate::denies('index-note', $note)) {
 			abort(403);
 		}
+		$note->interface = htmlentities($note->interface);
 		return response()->json($note);
 	}
 
@@ -124,7 +125,9 @@ class NoteController extends Controller
 		if(Gate::denies('update-note', $note)) {
 			abort(403);
 		}
-		$note->interface = $request->input('interface');
+		$interface = html_entity_decode($request->input('interface'));
+		$interface = preg_replace('#<br\s*/?>#i', "\n", $interface);
+		$note->interface = $interface;
 		$note->gene = $request->input('gene');
 		$note->setting = $request->input('setting');
 		$note->side_chara = $request->input('side_chara');
