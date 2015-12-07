@@ -67,6 +67,7 @@ class CharacterController extends Controller
 		$character->yobikata = $request->input('yobikata');
 		$character->birthmonth = $request->input('birthmonth');
 		$character->birthday = $request->input('birthday');
+		$character->image = $request->input('image');
 		if(Gate::denies('store-character', $character)) {
 			abort(403);
 		}
@@ -121,6 +122,7 @@ class CharacterController extends Controller
 		$character->yobikata = $request->input('yobikata');
 		$character->birthmonth = $request->input('birthmonth');
 		$character->birthday = $request->input('birthday');
+		$character->image = $request->input('image');
 		$exec = $character->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);
