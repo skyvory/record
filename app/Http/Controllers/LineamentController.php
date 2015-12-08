@@ -21,16 +21,27 @@ class LineamentController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 *
+	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
-		$lineament = Lineament::where('user_id', $user->id)->orderBy('date_created', 'desc')->paginate(10);
-		if(Gate::denies('index-lineament', $lineament)) {
-			abort(403);
+		$vn_id = $request->input('vn_id');
+		if($vn_id != null) {
+			$lineament = Lineament::leftJoin('characters', 'characters.id', '=', 'lineaments.character_id')->select('characters.*', 'lineaments.id as lineament_id', 'lineaments.note', 'lineaments.mark')->where('user_id', $user->id)->orderBy('characters.created_at')->get();
+			if(Gate::denies('index-lineament', $lineament)) {
+				abort(403);
+			}
+			return response()->json(['data' => $lineament]);
 		}
-		return response()->json($lineament);
+		else {
+			$lineament = Lineament::where('user_id', $user->id)->orderBy('created_at')->paginate(10);
+			if(Gate::denies('index-lineament', $lineament)) {
+				abort(403);
+			}
+			return response()->json($lineament);
+		}
 	}
 
 	/**
