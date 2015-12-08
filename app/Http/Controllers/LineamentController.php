@@ -29,7 +29,7 @@ class LineamentController extends Controller
 		$user = JWTAuth::parseToken()->authenticate();
 		$vn_id = $request->input('vn_id');
 		if($vn_id != null) {
-			$lineament = Lineament::leftJoin('characters', 'characters.id', '=', 'lineaments.character_id')->select('characters.*', 'lineaments.id as lineament_id', 'lineaments.note', 'lineaments.mark')->where('user_id', $user->id)->orderBy('characters.created_at')->get();
+			$lineament = Lineament::leftJoin('characters', 'characters.id', '=', 'lineaments.character_id')->select('characters.*', 'lineaments.id as lineament_id', 'lineaments.character_id', 'lineaments.note', 'lineaments.mark')->where('user_id', $user->id)->orderBy('characters.created_at')->get();
 			if(Gate::denies('index-lineament', $lineament)) {
 				abort(403);
 			}
