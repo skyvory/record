@@ -31,7 +31,7 @@ class CharacterController extends Controller
 		// $user = JWTAuth::parseToken()->authenticate();
 		$vn_id = $request->input('vn_id');
 		if($vn_id != null) {
-			$character = Character::leftJoin('lineaments', 'lineaments.character_id', '=', 'characters.id')->select('characters.*', 'lineaments.mark', 'lineaments.id as lineament_id')->where('vn_id', $vn_id)->orderBy('characters.id')->get();
+			$character = Character::leftJoin('lineaments', 'lineaments.character_id', '=', 'characters.id')->select('characters.*', 'lineaments.note', 'lineaments.mark', 'lineaments.id as lineament_id')->where('vn_id', $vn_id)->orderBy('characters.id')->get();
 			return response()->json(['data' => $character]);
 		}
 		else {
