@@ -73,7 +73,7 @@ class CharacterController extends Controller
 		}
 		$exec = $character->save();
 		if($exec) {
-			return response()->json(['status' => 'success']);
+			return response()->json($character);
 		}
 	}
 
