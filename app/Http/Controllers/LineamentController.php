@@ -33,6 +33,9 @@ class LineamentController extends Controller
 			if(Gate::denies('index-lineament', $lineament)) {
 				abort(403);
 			}
+			for($i = 0; $i < count($lineament); $i++) {
+				$lineament[$i]->note = $this->decodeInput($lineament[$i]->note);
+			}
 			return response()->json(['data' => $lineament]);
 		}
 		else {
@@ -40,6 +43,7 @@ class LineamentController extends Controller
 			if(Gate::denies('index-lineament', $lineament)) {
 				abort(403);
 			}
+			$lineament->note = htmlentities($lineament->note);
 			return response()->json($lineament);
 		}
 	}
@@ -69,7 +73,7 @@ class LineamentController extends Controller
 		$lineament = new Lineament();
 		$lineament->user_id = $request->user()->id;
 		$lineament->character_id = $request->input('character_id');
-		$lineament->note = $request->input('note');
+		$lineament->note = $this->decodeInput($request->input('note'));
 		$lineament->mark = $request->input('mark');
 		if(Gate::denies('store-lineament', $lineament)) {
 			abort(403);
@@ -93,6 +97,7 @@ class LineamentController extends Controller
 		if(Gate::denies('show-lineament', $lineament)) {
 			abort(403);
 		}
+		$lineament->note = $this->decodeInput($request->input('note'));
 		if($lineament) {
 			return response()->json($lineament);
 		}
@@ -126,7 +131,7 @@ class LineamentController extends Controller
 		if(Gate::denies('update-lineament', $lineament)) {
 			abort(403);
 		}
-		$lineament->note = $request->input('note');
+		$lineament->note = $this->decodeInput($request->input('note'));
 		$lineament->mark = $request->input('mark');
 		$exec = $lineament->save();
 		if($exec) {
@@ -150,5 +155,11 @@ class LineamentController extends Controller
 		if($exec) {
 			return response()->json(["status" => "success"]);
 		}
+	}
+
+	private function decodeInput($html) {
+		$html = html_entity_decode($html);
+		$html = preg_replace('#<br\s*/?>#i', "\n", $html);
+		return $html;
 	}
 }
