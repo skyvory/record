@@ -40,6 +40,7 @@ class LineamentController extends Controller
 			if(Gate::denies('index-lineament', $lineament)) {
 				abort(403);
 			}
+			$liineament->note = htmlentities($lineament->note);
 			return response()->json($lineament);
 		}
 	}
@@ -126,7 +127,7 @@ class LineamentController extends Controller
 		if(Gate::denies('update-lineament', $lineament)) {
 			abort(403);
 		}
-		$lineament->note = $request->input('note');
+		$lineament->note = $this->decodeInput($request->input('note'));
 		$lineament->mark = $request->input('mark');
 		$exec = $lineament->save();
 		if($exec) {
@@ -150,5 +151,11 @@ class LineamentController extends Controller
 		if($exec) {
 			return response()->json(["status" => "success"]);
 		}
+	}
+
+	private function decodeInput($html) {
+		$html = html_entity_decode($html);
+		$html = preg_replace('#<br\s*/?>#i', "\n", $html);
+		return $html;
 	}
 }
