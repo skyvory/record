@@ -26,6 +26,7 @@ class CreateAssessmentsTable extends Migration
 			$table->char('score_graphic')->nullable()->default('');
 			$table->integer('score_all')->nullable();
 			$table->boolean('archive_savedata')->default(false);
+			$table->string('status')->default('');
 			$table->timestamps();
 		});
 	}
