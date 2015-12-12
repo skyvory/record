@@ -38,17 +38,19 @@ class NoteController extends Controller
 		if(Gate::denies('index-note', $note)) {
 			abort(403);
 		}
-		$note->interface = htmlentities($note->interface);
-		$note->gene = htmlentities($note->gene);
-		$note->setting = htmlentities($note->setting);
-		$note->side_chara = htmlentities($note->side_chara);
-		$note->story = htmlentities($note->story);
-		$note->route = htmlentities($note->route);
-		$note->bgm = htmlentities($note->bgm);
-		$note->terminology = htmlentities($note->terminology);
-		$note->timescape = htmlentities($note->timescape);
-		$note->quote = htmlentities($note->quote);
-		$note->other = htmlentities($note->other);
+		if($note) {
+			$note->interface = htmlentities($note->interface);
+			$note->gene = htmlentities($note->gene);
+			$note->setting = htmlentities($note->setting);
+			$note->side_chara = htmlentities($note->side_chara);
+			$note->story = htmlentities($note->story);
+			$note->route = htmlentities($note->route);
+			$note->bgm = htmlentities($note->bgm);
+			$note->terminology = htmlentities($note->terminology);
+			$note->timescape = htmlentities($note->timescape);
+			$note->quote = htmlentities($note->quote);
+			$note->other = htmlentities($note->other);
+		}
 		return response()->json($note);
 	}
 
