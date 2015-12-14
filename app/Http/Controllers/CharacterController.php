@@ -72,6 +72,7 @@ class CharacterController extends Controller
 		$character->waist = $request->input('waist');
 		$character->hip = $request->input('hip');
 		$character->image = $request->input('image');
+		$character->vndb_character_id = $request->input('vndb_character_id');
 		if(Gate::denies('store-character', $character)) {
 			abort(403);
 		}
@@ -131,6 +132,7 @@ class CharacterController extends Controller
 		$character->waist = $request->input('waist');
 		$character->hip = $request->input('hip');
 		$character->image = $request->input('image');
+		$character->vndb_character_id = $request->input('vndb_character_id');
 		$exec = $character->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);

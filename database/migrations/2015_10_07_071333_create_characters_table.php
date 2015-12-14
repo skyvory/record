@@ -26,6 +26,7 @@ class CreateCharactersTable extends Migration
 			$table->integer('waist')->unsigned()->nullable();
 			$table->integer('hip')->unsigned()->nullable();
 			$table->string('image')->nullable();
+			$table->integer('vndb_character_id')->unsigned()->nullable();
 			$table->timestamps();
 		});
 	}
