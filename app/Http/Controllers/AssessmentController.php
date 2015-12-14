@@ -68,7 +68,7 @@ class AssessmentController extends Controller
 		}
 		$exec = $assessment->save();
 		if($exec) {
-			return response()->json(['status' => 'success']);
+			return response()->json($assessment);
 		}
 	}
 
