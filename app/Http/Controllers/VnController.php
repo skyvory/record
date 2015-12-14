@@ -27,9 +27,15 @@ class VnController extends Controller
 	public function index(Request $request)
 	{
 		$title = "vN List";
-		$q = $request->input('search') ? $request->input('search') : '';
-		$limit = $request->input('limit') ? $request->input('limit') : 10;
-		$vn = Vn::where('title_en', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate($limit);
+		if($request->has('search')) {
+			$q = $request->has('search') ? $request->input('search') : '';
+			$vn = Vn::where('title_en', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate($limit);
+			
+		}
+		else {
+			$limit = $request->input('limit') ? $request->input('limit') : 10;
+			$vn = Vn::orderBy('created_at', 'desc')->paginate($limit);
+		}
 		// $vn = Vn::all();
 		return $vn->toJson();
 	}
