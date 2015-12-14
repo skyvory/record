@@ -66,6 +66,7 @@ class VnController extends Controller
 			$vn->hashtag = $request->input('hashtag');
 			$vn->developer_id = $request->input('developer_id');
 			$vn->date_release = $request->input('date_release');
+			$vn->vndb_vn_id = $request->input('vndb_vn_id');
 			$exec = $vn->save();
 			if($exec) {
 				return response()->json(["status" => "success"]);
@@ -95,6 +96,7 @@ class VnController extends Controller
 						'date_release' => $vn->date_release,
 						'created_at' => $vn->created_at,
 						'updated_at' => $vn->updated_at,
+						'vndb_vn_id' => $vn->vndb_vn_id,
 					// ]
 				];
 			}
@@ -163,6 +165,7 @@ class VnController extends Controller
 				$date_release = $request->input('date_release');
 				$vn->date_release = $date_release;
 			}
+			$vn->vndb_vn_id = $request->has('vndb_vn_id') ? $request->input('vndb_vn_id') : null;
 			$exec = $vn->save();
 			if($exec) {
 				return response()->json(["status" => "success"]);
