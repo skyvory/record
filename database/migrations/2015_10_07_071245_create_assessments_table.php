@@ -25,7 +25,7 @@ class CreateAssessmentsTable extends Migration
 			$table->char('score_nuki')->nullable()->default('');
 			$table->char('score_graphic')->nullable()->default('');
 			$table->integer('score_all')->nullable();
-			$table->boolean('archive_savedata')->default(false);
+			$table->boolean('archive_savedata')->nullable()->default(false);
 			$table->string('status')->nullable()->default('');
 			$table->timestamps();
 		});
