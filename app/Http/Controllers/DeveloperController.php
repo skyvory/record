@@ -31,8 +31,10 @@ class DeveloperController extends Controller
 			$developer = Developer::where('name_en', $request->input('name_en'))->first();
 			return response()->json($developer);
 		}
-		$developer = Developer::orderBy('name_en')->paginate(1000);
-		return response()->json($developer);
+		// $developer = Developer::orderBy('name_en')->paginate(1000);
+		// return response()->json($developer);
+		$developer = Developer::orderBy('name_en')->get();
+		return response()->json(['data' => $developer]);
 	}
 
 	/**
