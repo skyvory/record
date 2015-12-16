@@ -27,8 +27,9 @@ class VnController extends Controller
 	public function index(Request $request)
 	{
 		$title = "vN List";
-		if($request->has('search')) {
-			$q = $request->has('search') ? $request->input('search') : '';
+		if($request->has('filter')) {
+			$limit = $request->input('limit') ? $request->input('limit') : 10;
+			$q = $request->has('filter') ? $request->input('filter') : '';
 			$vn = Vn::where('title_en', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate($limit);
 			
 		}
