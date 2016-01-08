@@ -20,7 +20,8 @@ class Client
 	
 	public function connect()
 	{
-		$this->fp = fsockopen("api.vndb.org", 19534, $errno, $errstr, 10);
+		$context = stream_context_create();
+		$this->fp = stream_socket_client("tls://api.vndb.org:19535", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
 		
 		if (!$this->fp) {
 			echo "ERROR: $errstr ($errno)<br />\n";
@@ -32,7 +33,7 @@ class Client
 		$data = array(
 			'protocol' => 1,
 			'client' => 'skyvory',
-			'clientver' => 0.1,
+			'clientver' => 0.2,
 			'username' => $username,
 			'password' => $password
 		);
