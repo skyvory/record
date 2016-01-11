@@ -80,7 +80,7 @@ class LineamentController extends Controller
 		}
 		$exec = $lineament->save();
 		if($exec) {
-			return response()->json(['status' => 'success']);
+			return response()->json($lineament);
 		}
 	}
 
