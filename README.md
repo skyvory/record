@@ -14,16 +14,16 @@ Whilst no hardcode restriction being applied, there are some conventions used in
 #### - Status
 Derived from common point of identification with unnecessary/temporary hassle ommited
 1.  finished
-	Mark for completely finished tittle.
+Mark for completely finished tittle.
 2.  halted
-	Mark for suspended/stalled title.
+Mark for suspended/stalled title.
 
 #### - Node
 Root base of the title's genre on the lowest level split into 2 division
 1. VN
-	Targeted for full story-oriented content, preferably with low erotism.
+Targeted for full story-oriented content, preferably with low erotism.
 2. H
-	Targeted for content with low-quality story and particularly from some extent to higher amount of sexual content.
+Targeted for content with low-quality story and particularly from some extent to higher amount of sexual content.
 
 ### Character
 #### - Mark
