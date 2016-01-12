@@ -67,6 +67,7 @@ class AssessmentController extends Controller
 			abort(403);
 		}
 		$exec = $assessment->save();
+		$assessment->vndb_vn_id = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('vn.vndb_vn_id')->where('assessments.id', $assessment->id)->first()->vndb_vn_id;
 		if($exec) {
 			return response()->json($assessment);
 		}
@@ -126,6 +127,7 @@ class AssessmentController extends Controller
 		$assessment->score_all = $request->input('score_all');
 		$assessment->archive_savedata = $request->input('archive_savedata');
 		$exec = $assessment->save();
+		$assessment->vndb_vn_id = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('vn.vndb_vn_id')->where('assessments.id', $assessment->id)->first()->vndb_vn_id;
 		if($exec) {
 			return response()->json($assessment);
 		}
