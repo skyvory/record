@@ -81,7 +81,7 @@ class AssessmentController extends Controller
 	public function show($id)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
-		$assessment = Assessment::where('user_id', $user->id)->where('vn_id', $id)->first();
+		$assessment = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('assessments.*', 'vn.vndb_vn_id')->where('user_id', $user->id)->where('vn_id', $id)->first();
 		if(Gate::denies('show-assessment', $assessment)) {
 			abort(403);
 		}
