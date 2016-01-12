@@ -51,7 +51,7 @@ class VndbController extends Controller
 		$client->connect();
 		$client->login($username = $request->input('username'), $password = $request->input('password'));
 		$vndb_id = $request->input('vndb_id');
-		$vote = $request->input('vote');
+		$vote = $request->input('vote') * 10;
 		$res = $client->sendCommand('set votelist ' . (int)$vndb_id . ' {"vote": ' . (int)$vote . '}');
 		$res_after = json_decode(json_encode($res), true);
 		return response()->json($res_after);
