@@ -56,6 +56,18 @@ class VndbController extends Controller
 		$res_after = json_decode(json_encode($res), true);
 		return response()->json($res_after);
 	}
+	public function setStatus(Request $request) {
+		$client = new Client();
+		$client->connect();
+		$client->login($username = $request->input('username'), $password = $request->input('password'));
+		$vndb_id = $request->input('vndb_id');
+		$vndb_status = null;
+		$vndb_status = $request->input('status') == 'finished' ? 2 : $vndb_status;
+		$vndb_status = $request->input('status') == 'halted' ? 3 : $vndb_status;
+		$res = $client->sendCommand('set vnlist ' . (int)$vndb_id . ' {"status": ' . (int)$vndb_status . '}');
+		$res_after = json_decode(json_encode($res), true);
+		return response()->json($res_after);
+	}
 
 	
 	/**
