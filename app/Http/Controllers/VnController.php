@@ -30,7 +30,7 @@ class VnController extends Controller
 		if($request->has('filter')) {
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
 			$q = $request->has('filter') ? $request->input('filter') : '';
-			$vn = Vn::where('title_en', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate($limit);
+			$vn = Vn::where('title_en', 'like', '%' . $q . '%')->orwhere('title_jp', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate($limit);
 			
 		}
 		else {
