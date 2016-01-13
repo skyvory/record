@@ -17,6 +17,8 @@ Derived from common point of identification with unnecessary/temporary hassle om
 Mark for completely finished tittle.
 2.  halted
 Mark for suspended/stalled title.
+3. dropped
+Planned to use decomposed to no avail. Common term is used instead.
 
 #### - Node
 Root base of the title's genre on the lowest level split into 2 division
