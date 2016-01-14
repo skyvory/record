@@ -57,16 +57,19 @@ class AssessmentController extends Controller
 		$assessment->user_id = $request->user()->id;
 		$assessment->date_start = $request->input('date_start');
 		$assessment->date_end = $request->input('date_end');
+		$assessment->node = $request->input('node');
 		$assessment->score_story = $request->input('score_story');
 		$assessment->score_naki = $request->input('score_naki');
 		$assessment->score_nuki = $request->input('score_nuki');
 		$assessment->score_graphic = $request->input('score_graphic');
 		$assessment->score_all = $request->input('score_all');
 		$assessment->archive_savedata = $request->input('archive_savedata');
+		$assessment->status = $request->input('status');
 		if(Gate::denies('store-assessment', $assessment)) {
 			abort(403);
 		}
 		$exec = $assessment->save();
+		$assessment->vndb_vn_id = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('vn.vndb_vn_id')->where('assessments.id', $assessment->id)->first()->vndb_vn_id;
 		if($exec) {
 			return response()->json($assessment);
 		}
@@ -81,7 +84,7 @@ class AssessmentController extends Controller
 	public function show($id)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
-		$assessment = Assessment::where('user_id', $user->id)->where('vn_id', $id)->first();
+		$assessment = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('assessments.*', 'vn.vndb_vn_id')->where('user_id', $user->id)->where('vn_id', $id)->first();
 		if(Gate::denies('show-assessment', $assessment)) {
 			abort(403);
 		}
@@ -119,13 +122,16 @@ class AssessmentController extends Controller
 		}
 		$assessment->date_start = $request->input('date_start');
 		$assessment->date_end = $request->input('date_end');
+		$assessment->node = $request->input('node');
 		$assessment->score_story = $request->input('score_story');
 		$assessment->score_naki = $request->input('score_naki');
 		$assessment->score_nuki = $request->input('score_nuki');
 		$assessment->score_graphic = $request->input('score_graphic');
 		$assessment->score_all = $request->input('score_all');
 		$assessment->archive_savedata = $request->input('archive_savedata');
+		$assessment->status = $request->input('status');
 		$exec = $assessment->save();
+		$assessment->vndb_vn_id = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('vn.vndb_vn_id')->where('assessments.id', $assessment->id)->first()->vndb_vn_id;
 		if($exec) {
 			return response()->json($assessment);
 		}
