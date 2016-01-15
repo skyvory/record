@@ -27,16 +27,24 @@ class VnController extends Controller
 	public function index(Request $request)
 	{
 		$title = "vN List";
+		$user = JWTAuth::parseToken()->authenticate();
 		if($request->has('filter')) {
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
 			$q = $request->has('filter') ? $request->input('filter') : '';
-			$vn = Vn::where('title_en', 'like', '%' . $q . '%')->orwhere('title_jp', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate($limit);
+			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')->where('assessments.user_id', $user->id)
+				->where('title_en', 'like', '%' . $q . '%')->orwhere('title_jp', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate($limit);
 			
 		}
 		else {
+		$userid = $user->id;
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
-			$user = JWTAuth::parseToken()->authenticate();
-			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')->where('assessments.user_id', $user->id)
+			$vn = Vn::leftJoin('assessments', function($join) use ($userid)
+				{
+					$join->on('assessments', 'assessments.vn_id', '=', 'vn.id');
+					$join->on('assessments', 'assessments.user_id', '=', Vn::raw("'" . $userid . "'"));
+				}
+				)
+				->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
 				->orderBy('created_at', 'desc')->paginate($limit);
 		}
 		// $vn = Vn::all();
