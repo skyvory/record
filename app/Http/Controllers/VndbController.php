@@ -63,7 +63,7 @@ class VndbController extends Controller
 		$vndb_id = $request->input('vndb_id');
 		$vndb_status = null;
 		$vndb_status = $request->input('status') == 'finished' ? 2 : $vndb_status;
-		$vndb_status = $request->input('status') == 'halted' ? 3 : $vndb_status;
+		$vndb_status = $request->input('status') == 'stalled' ? 3 : $vndb_status;
 		$vndb_status = $request->input('status') == 'dropped' ? 4 : $vndb_status;
 		$res = $client->sendCommand('set vnlist ' . (int)$vndb_id . ' {"status": ' . (int)$vndb_status . '}');
 		$res_after = json_decode(json_encode($res), true);
