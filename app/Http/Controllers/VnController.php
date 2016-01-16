@@ -36,15 +36,8 @@ class VnController extends Controller
 		else {
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
 			$user = JWTAuth::parseToken()->authenticate();
-			$userid = (string)$user->id;
-			$limit = $request->input('limit') ? $request->input('limit') : 10;
-			$vn = Vn::leftJoin('assessments', function($join) use ($userid)
-				{
-					$join->on('assessments.vn_id', '=', 'vn.id')
-						->on('assessments.user_id', '=', Vn::raw("'" . $userid . "'"));
-				})
-				->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
-				->orderBy('vn.created_at', 'desc')->paginate($limit);
+			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')->where('assessments.user_id', $user->id)
+				->orderBy('created_at', 'desc')->paginate($limit);
 		}
 		// $vn = Vn::all();
 		return $vn->toJson();
