@@ -27,17 +27,30 @@ class VnController extends Controller
 	public function index(Request $request)
 	{
 		$title = "vN List";
+		$user = JWTAuth::parseToken()->authenticate();
 		if($request->has('filter')) {
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
 			$q = $request->has('filter') ? $request->input('filter') : '';
-			$vn = Vn::where('title_en', 'like', '%' . $q . '%')->orwhere('title_jp', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate($limit);
+			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')
+					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
+					->where(function($query) use ($user) {
+						$query->where('assessments.user_id', $user->id);
+						$query->orwhere('assessments.user_id', null);
+					})
+					->where(function($query) use ($q) {
+						$query->where('title_en', 'like', '%' . $q . '%')->orwhere('title_jp', 'like', '%' . $q . '%');
+					})
+					->orderBy('created_at', 'desc')->paginate($limit);
 			
 		}
 		else {
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
-			$user = JWTAuth::parseToken()->authenticate();
-			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')->where('assessments.user_id', $user->id)
-				->orderBy('created_at', 'desc')->paginate($limit);
+			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')
+					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
+					->where('assessments.user_id', $user->id)
+					->orwhere('assessments.user_id', null)
+					->orderBy('created_at', 'desc')
+					->paginate($limit);
 		}
 		// $vn = Vn::all();
 		return $vn->toJson();
