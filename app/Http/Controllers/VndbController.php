@@ -41,7 +41,8 @@ class VndbController extends Controller
 		$client = new Client();
 		$client->connect();
 		$client->login($username = $request->input('username'), $password = $request->input('password'));
-		$options = json_encode(array('results' => 25));
+		$page = $request->input('page') ?: 1;
+		$options = json_encode(array('results' => 25, 'page' => $page));
 		$res = $client->sendCommand('get character basic,details,meas,traits (vn = ' . (int)$request->input('vndb_id') . ') ' . $options);
 		$res_after = json_decode(json_encode($res), true);
 		return response()->json($res_after);
