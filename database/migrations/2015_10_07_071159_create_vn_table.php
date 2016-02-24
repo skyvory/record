@@ -21,6 +21,7 @@ class CreateVnTable extends Migration
 			// $table->foreign('developer_id')->references('id')->on('developers')->onDelete('cascade');
 			$table->date('date_release')->nullable();
 			$table->string('image', 256)->nullable();
+			$table->string('local_image', 512)->nullable();
 			$table->integer('vndb_vn_id')->unsigned()->nullable();
 			$table->timestamps();
 		});
