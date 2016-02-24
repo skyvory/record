@@ -14,6 +14,8 @@ use Gate;
 use App\User;
 use App\Character;
 
+use Image;
+
 class CharacterController extends Controller
 {
 
@@ -78,6 +80,20 @@ class CharacterController extends Controller
 		}
 		$exec = $character->save();
 		if($exec) {
+			$url = $request->input('image');
+			$local_filename = null;
+			if($url) {
+				$filename = basename($url);
+				$local_filename = $character->id . "_" . $filename;
+				// using php copy function
+				// copy($url, 'reallocation/' . $filename);
+				// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
+				Image::make($url)->save('reallocation/character/' . $local_filename, 100);
+				// save local filename to database
+				$character->local_image = $local_filename;
+				$character->save();
+			}
+
 			return response()->json($character);
 		}
 	}
@@ -121,6 +137,17 @@ class CharacterController extends Controller
 		if(Gate::denies('update-character', $character)) {
 			abort(403);
 		}
+
+		$url = $request->input('image');
+		$existing_local_filename = $character->local_image;
+		if($url) {
+			$filename = basename($url);
+			$local_filename = $id . "_" . $filename;
+			if($local_filename != $existing_local_filename) {
+				Image::make($url)->save('reallocation/character/' . $local_filename, 100);
+			}
+		}
+
 		$character->vn_id = $request->input('vn_id');
 		$character->kanji = $request->input('kanji');
 		$character->betsumyou = $request->input('betsumyou');
@@ -132,6 +159,7 @@ class CharacterController extends Controller
 		$character->waist = $request->input('waist');
 		$character->hip = $request->input('hip');
 		$character->image = $request->input('image');
+		$character->local_image = $local_filename;
 		$character->vndb_character_id = $request->input('vndb_character_id');
 		$exec = $character->save();
 		if($exec) {

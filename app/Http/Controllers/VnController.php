@@ -13,6 +13,8 @@ use Illuminate\Http\Response;
 use App\Vn;
 use App\User;
 
+use Image;
+
 class VnController extends Controller
 {
 	public function __construct() {
@@ -92,6 +94,21 @@ class VnController extends Controller
 			$vn->vndb_vn_id = $request->input('vndb_vn_id');
 			$exec = $vn->save();
 			if($exec) {
+				// save remote image to local
+				$url = $request->input('image');
+				$local_filename = null;
+				if($url) {
+					$filename = basename($url);
+					$local_filename = $vn->id . "_" . $filename;
+					// using php copy function
+					// copy($url, 'reallocation/' . $filename);
+					// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
+					Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+					// save local filename to database
+					$vn->local_image = $local_filename;
+					$vn->save();
+				}
+
 				return response()->json(["status" => "success"]);
 			}
 		}
@@ -169,6 +186,16 @@ class VnController extends Controller
 		if($allow == true) {
 			$vn = Vn::find($id);
 
+			$url = $request->input('image');
+			$existing_local_filename = $vn->local_image;
+			if($url) {
+				$filename = basename($url);
+				$local_filename = $id . "_" . $filename;
+				if($local_filename != $existing_local_filename) {
+					Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+				}
+			}
+
 			if($request->has('title_en')) {
 				$title_en = $request->input('title_en');
 				$vn->title_en = $title_en;
@@ -186,6 +213,7 @@ class VnController extends Controller
 				$vn->developer_id = $developer_id;
 			}
 			$vn->image = $request->has('image') ? $request->input('image') : null;
+			$vn->local_image = $local_filename;
 			if($request->has('date_release')) {
 				$date_release = $request->input('date_release');
 				$vn->date_release = $date_release;
