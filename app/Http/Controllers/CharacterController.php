@@ -140,6 +140,7 @@ class CharacterController extends Controller
 
 		$url = $request->input('image');
 		$existing_local_filename = $character->local_image;
+		$local_filename = null;
 		if($url) {
 			$filename = basename($url);
 			$local_filename = $id . "_" . $filename;
