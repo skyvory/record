@@ -7,6 +7,9 @@ The motives are, used by vndb, deficient and substandard evaluation/voting syste
 This web app serves as prototypical design reference for future development plan which will be detached from central data processing dependence.  
 The loose-coupled back-front separation will be unified thence.
 
+# Prequisites
+1. Enable `extension=php_fileinfo.dll` in php.ini
+
 # Preparation
 1. Install [Composer] (https://getcomposer.org/download/)
 2. Run `composer install` in directory consisting composer.json
