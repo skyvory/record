@@ -21,7 +21,13 @@ class Client
 	public function connect()
 	{
 		$context = stream_context_create();
-		$this->fp = stream_socket_client("tls://api.vndb.org:19535", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
+		$target_protocol = 'tcp';
+		if($target_protocol == 'tcp') {
+			$this->fp = stream_socket_client("tcp://api.vndb.org:19534", $errno, $errstr, 60, STREAM_CLIENT_CONNECT, $context);
+		}
+		else if($target_protocol == 'tls') {
+			$this->fp = stream_socket_client("tls://api.vndb.org:19535", $errno, $errstr, 60, STREAM_CLIENT_CONNECT, $context);
+		}
 		
 		if (!$this->fp) {
 			echo "ERROR: $errstr ($errno)<br />\n";
