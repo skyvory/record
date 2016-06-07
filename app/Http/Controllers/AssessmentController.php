@@ -52,6 +52,13 @@ class AssessmentController extends Controller
 	 */
 	public function store(Request $request)
 	{
+		$allowed_node = array('unknown', 'vn', 'h', 'hrpg', 'rpg');
+		if(!in_array($request->input('node'), $allowed_node)) {
+			$node = 'unknown';
+		}
+		else {
+			$node = $request->input('node');
+		}
 		$savable = "unknown";
 		if($request->input('savable') == "yes") {
 			$savable = "yes";
@@ -59,13 +66,13 @@ class AssessmentController extends Controller
 		else if($request->input('savable') == "no") {
 			$savable = "no";
 		}
-		
+
 		$assessment = new Assessment();
 		$assessment->vn_id = $request->input('vn_id');
 		$assessment->user_id = $request->user()->id;
 		$assessment->date_start = $request->input('date_start');
 		$assessment->date_end = $request->input('date_end');
-		$assessment->node = $request->input('node');
+		$assessment->node = $node;
 		$assessment->score_story = $request->input('score_story');
 		$assessment->score_naki = $request->input('score_naki');
 		$assessment->score_nuki = $request->input('score_nuki');
@@ -131,6 +138,13 @@ class AssessmentController extends Controller
 			abort(403);
 		}
 
+		$allowed_node = array('unknown', 'vn', 'h', 'hrpg', 'rpg');
+		if(!in_array($request->input('node'), $allowed_node)) {
+			$node = 'unknown';
+		}
+		else {
+			$node = $request->input('node');
+		}
 		$savable = "unknown";
 		if($request->input('savable') == "yes") {
 			$savable = "yes";
