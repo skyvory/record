@@ -34,7 +34,7 @@ class VnController extends Controller
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
 			$q = $request->has('filter') ? $request->input('filter') : '';
 			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')
-					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
+					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_comedy', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
 					->where(function($query) use ($user) {
 						$query->where('assessments.user_id', $user->id);
 						$query->orwhere('assessments.user_id', null);
@@ -48,7 +48,7 @@ class VnController extends Controller
 		else {
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
 			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')
-					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
+					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_comedy', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
 					->where('assessments.user_id', $user->id)
 					->orwhere('assessments.user_id', null)
 					->orderBy('created_at', 'desc')

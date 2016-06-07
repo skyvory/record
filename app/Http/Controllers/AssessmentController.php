@@ -61,9 +61,18 @@ class AssessmentController extends Controller
 		$assessment->score_story = $request->input('score_story');
 		$assessment->score_naki = $request->input('score_naki');
 		$assessment->score_nuki = $request->input('score_nuki');
+		$assessment->score_comedy = $request->input('score_comedy');
 		$assessment->score_graphic = $request->input('score_graphic');
 		$assessment->score_all = $request->input('score_all');
 		$assessment->archive_savedata = $request->input('archive_savedata');
+		$savable = "unknown";
+		if($request->input('savable') == "yes") {
+			$savable = "yes";
+		}
+		else if($request->input('savable') == "no") {
+			$savable = "no";
+		}
+		$assessment->savable = $savable;
 		$assessment->status = $request->input('status');
 		if(Gate::denies('store-assessment', $assessment)) {
 			abort(403);
@@ -126,9 +135,18 @@ class AssessmentController extends Controller
 		$assessment->score_story = $request->input('score_story');
 		$assessment->score_naki = $request->input('score_naki');
 		$assessment->score_nuki = $request->input('score_nuki');
+		$assessment->score_comedy = $request->input('score_comedy');
 		$assessment->score_graphic = $request->input('score_graphic');
 		$assessment->score_all = $request->input('score_all');
 		$assessment->archive_savedata = $request->input('archive_savedata');
+		$savable = "unknown";
+		if($request->input('savable') == "yes") {
+			$savable = "yes";
+		}
+		else if($request->input('savable') == "no") {
+			$savable = "no";
+		}
+		$assessment->savable = $savable;
 		$assessment->status = $request->input('status');
 		$exec = $assessment->save();
 		$assessment->vndb_vn_id = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('vn.vndb_vn_id')->where('assessments.id', $assessment->id)->first()->vndb_vn_id;
