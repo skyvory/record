@@ -15,7 +15,7 @@ class UpdateAssessmentsTable extends Migration
 		if(Schema::hasTable('assessments')) {
 			Schema::table('assessments', function($table) {
 				$table->char('score_comedy')->after('score_nuki')->nullable()->default('');
-				$table->boolean('savable')->after('score_all')->nullable();
+				$table->string('savable', 16)->after('score_all')->nullable()->default('unknown');
 			});
 		}
 	}
