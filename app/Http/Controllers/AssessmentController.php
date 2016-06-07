@@ -52,6 +52,14 @@ class AssessmentController extends Controller
 	 */
 	public function store(Request $request)
 	{
+		$savable = "unknown";
+		if($request->input('savable') == "yes") {
+			$savable = "yes";
+		}
+		else if($request->input('savable') == "no") {
+			$savable = "no";
+		}
+		
 		$assessment = new Assessment();
 		$assessment->vn_id = $request->input('vn_id');
 		$assessment->user_id = $request->user()->id;
@@ -65,13 +73,6 @@ class AssessmentController extends Controller
 		$assessment->score_graphic = $request->input('score_graphic');
 		$assessment->score_all = $request->input('score_all');
 		$assessment->archive_savedata = $request->input('archive_savedata');
-		$savable = "unknown";
-		if($request->input('savable') == "yes") {
-			$savable = "yes";
-		}
-		else if($request->input('savable') == "no") {
-			$savable = "no";
-		}
 		$assessment->savable = $savable;
 		$assessment->status = $request->input('status');
 		if(Gate::denies('store-assessment', $assessment)) {
@@ -129,6 +130,15 @@ class AssessmentController extends Controller
 		if(Gate::denies('update-assessment', $assessment)) {
 			abort(403);
 		}
+
+		$savable = "unknown";
+		if($request->input('savable') == "yes") {
+			$savable = "yes";
+		}
+		else if($request->input('savable') == "no") {
+			$savable = "no";
+		}
+
 		$assessment->date_start = $request->input('date_start');
 		$assessment->date_end = $request->input('date_end');
 		$assessment->node = $request->input('node');
@@ -139,13 +149,6 @@ class AssessmentController extends Controller
 		$assessment->score_graphic = $request->input('score_graphic');
 		$assessment->score_all = $request->input('score_all');
 		$assessment->archive_savedata = $request->input('archive_savedata');
-		$savable = "unknown";
-		if($request->input('savable') == "yes") {
-			$savable = "yes";
-		}
-		else if($request->input('savable') == "no") {
-			$savable = "no";
-		}
 		$assessment->savable = $savable;
 		$assessment->status = $request->input('status');
 		$exec = $assessment->save();
