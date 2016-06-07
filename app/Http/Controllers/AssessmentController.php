@@ -13,6 +13,7 @@ use Illuminate\Http\Response;
 use Gate;
 use App\Assessment;
 use App\User;
+use App\AssessmentHistory;
 
 class AssessmentController extends Controller
 {
@@ -153,21 +154,53 @@ class AssessmentController extends Controller
 			$savable = "no";
 		}
 
-		$assessment->date_start = $request->input('date_start');
-		$assessment->date_end = $request->input('date_end');
-		$assessment->node = $request->input('node');
-		$assessment->score_story = $request->input('score_story');
-		$assessment->score_naki = $request->input('score_naki');
-		$assessment->score_nuki = $request->input('score_nuki');
-		$assessment->score_comedy = $request->input('score_comedy');
-		$assessment->score_graphic = $request->input('score_graphic');
-		$assessment->score_all = $request->input('score_all');
-		$assessment->archive_savedata = $request->input('archive_savedata');
-		$assessment->savable = $savable;
-		$assessment->status = $request->input('status');
-		$exec = $assessment->save();
-		$assessment->vndb_vn_id = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('vn.vndb_vn_id')->where('assessments.id', $assessment->id)->first()->vndb_vn_id;
-		if($exec) {
+		// check for any change in the record
+		if($assessment->date_start != $request->input('date_start') || $assessment->date_end != $request->input('date_end') || $assessment->node != $request->input('node') || $assessment->score_story != $request->input('score_story') || $assessment->score_naki != $request->input('score_naki') || $assessment->score_nuki != $request->input('score_nuki') || $assessment->score_comedy != $request->input('score_comedy') || $assessment->score_graphic != $request->input('score_graphic') || $assessment->score_all != $request->input('score_all') || $assessment->archive_savedata != $request->input('archive_savedata') || $assessment->savable != $request->input('savable') || $assessment->status != $request->input('status')) {
+
+			// log to-be-updated record to history table
+			$assessment_history = new AssessmentHistory();
+			$assessment_history->assessment_id = $assessment->id;
+			$max_revision_sequence = AssessmentHistory::select('revision_sequence')->where('assessment_id', $assessment->id)->max('revision_sequence');
+			$assessment_history->revision_sequence = $max_revision_sequence ? $max_revision_sequence + 1 : 1;
+			$assessment_history->modified_date = $assessment->updated_at;
+			$assessment_history->vn_id = $assessment->vn_id;
+			$assessment_history->user_id = $assessment->user_id;
+			$assessment_history->date_start = $assessment->date_start;
+			$assessment_history->date_end = $assessment->date_end;
+			$assessment_history->node = $assessment->node;
+			$assessment_history->score_story = $assessment->score_story;
+			$assessment_history->score_naki = $assessment->score_naki;
+			$assessment_history->score_nuki = $assessment->score_nuki;
+			$assessment_history->score_comedy = $assessment->score_comedy;
+			$assessment_history->score_graphic = $assessment->score_graphic;
+			$assessment_history->score_all = $assessment->score_all;
+			$assessment_history->savable = $assessment->savable;
+			$assessment_history->archive_savedata = $assessment->archive_savedata;
+			$assessment_history->status = $assessment->status;
+			$exec_history = $assessment_history->save();
+			if(!$exec_history) {
+				return response()->json(['status' => 'error', 'errors' => ['something is wrong with logging']]);
+			}
+
+			$assessment->date_start = $request->input('date_start');
+			$assessment->date_end = $request->input('date_end');
+			$assessment->node = $request->input('node');
+			$assessment->score_story = $request->input('score_story');
+			$assessment->score_naki = $request->input('score_naki');
+			$assessment->score_nuki = $request->input('score_nuki');
+			$assessment->score_comedy = $request->input('score_comedy');
+			$assessment->score_graphic = $request->input('score_graphic');
+			$assessment->score_all = $request->input('score_all');
+			$assessment->archive_savedata = $request->input('archive_savedata');
+			$assessment->savable = $savable;
+			$assessment->status = $request->input('status');
+			$exec = $assessment->save();
+			$assessment->vndb_vn_id = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('vn.vndb_vn_id')->where('assessments.id', $assessment->id)->first()->vndb_vn_id;
+			if($exec) {
+				return response()->json($assessment);
+			}
+		}
+		else {
 			return response()->json($assessment);
 		}
 	}
