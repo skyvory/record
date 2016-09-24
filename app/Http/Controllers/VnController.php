@@ -12,11 +12,14 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Response;
 use App\Vn;
 use App\User;
+use App\Http\Controllers\ExtensionPlus;
 
 use Image;
 
 class VnController extends Controller
 {
+	use ExtensionPlus;
+
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
 	}
@@ -103,10 +106,12 @@ class VnController extends Controller
 					// using php copy function
 					// copy($url, 'reallocation/' . $filename);
 					// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
-					Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
-					// save local filename to database
-					$vn->local_image = $local_filename;
-					$vn->save();
+					// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+					if($this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename)) {
+						// save local filename to database
+						$vn->local_image = $local_filename;
+						$vn->save();
+					}
 				}
 
 				return response()->json(["status" => "success"]);
@@ -192,7 +197,8 @@ class VnController extends Controller
 				$filename = basename($url);
 				$local_filename = $id . "_" . $filename;
 				if($local_filename != $existing_local_filename) {
-					Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+					// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+					$this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename);
 				}
 			}
 

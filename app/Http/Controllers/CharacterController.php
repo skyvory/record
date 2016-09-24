@@ -13,11 +13,13 @@ use Illuminate\Http\Response;
 use Gate;
 use App\User;
 use App\Character;
-
 use Image;
+use App\Http\Controllers\ExtensionPlus;
 
 class CharacterController extends Controller
 {
+
+	use ExtensionPlus;
 
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
@@ -81,17 +83,23 @@ class CharacterController extends Controller
 		$exec = $character->save();
 		if($exec) {
 			$url = $request->input('image');
+			// $url = 'https://www.ancestry.com/wiki/images/archive/a/a9/20100708215937!Example.jpg';
 			$local_filename = null;
 			if($url) {
 				$filename = basename($url);
 				$local_filename = $character->id . "_" . $filename;
+				$imgpath = 'reallocation/character/' . $local_filename;
+				
 				// using php copy function
 				// copy($url, 'reallocation/' . $filename);
 				// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
-				Image::make($url)->save('reallocation/character/' . $local_filename, 100);
-				// save local filename to database
-				$character->local_image = $local_filename;
-				$character->save();
+				// Image::make($url)->save('reallocation/character/' . $local_filename, 100);
+
+				if($this->saveRemoteImage($url, $imgpath)) {
+					// save local filename to database
+					$character->local_image = $local_filename;
+					$character->save();
+				}
 			}
 
 			return response()->json($character);
@@ -145,7 +153,8 @@ class CharacterController extends Controller
 			$filename = basename($url);
 			$local_filename = $id . "_" . $filename;
 			if($local_filename != $existing_local_filename) {
-				Image::make($url)->save('reallocation/character/' . $local_filename, 100);
+				 $this->saveRemoteImage($url, 'reallocation/character/' . $local_filename);
+				// Image::make($url)->save('reallocation/character/' . $local_filename, 100);
 			}
 		}
 
