@@ -20,12 +20,27 @@ class Client
 	
 	public function connect()
 	{
+		$context_options = [
+			'ssl' => [
+				'verify_peer' => true,
+				'local_cert' => 'isrgrootx1.pem',
+				'verify_peer_name' => true,
+				'allow_self_signed' => true,
+			]
+		];
 		$context = stream_context_create();
-		$target_protocol = 'tcp';
+		$target_protocol = 'tls';
 		if($target_protocol == 'tcp') {
 			$this->fp = stream_socket_client("tcp://api.vndb.org:19534", $errno, $errstr, 60, STREAM_CLIENT_CONNECT, $context);
 		}
 		else if($target_protocol == 'tls') {
+			// stream_context_set_option($context, 'ssl', 'local_cert', 'isrgrootx1.pem');
+			// stream_context_set_option($context, 'ssl', 'verify_peer', true);
+			// stream_context_set_option($context, 'ssl', 'verify_peer_name', true);
+			stream_context_set_option($context, 'ssl', 'allow_self_signed', true);
+			stream_context_set_option($context, 'ssl', 'verify_peer', false);
+			stream_context_set_option($context, 'ssl', 'verify_peer_name', false);
+			// stream_context_set_option($context, 'ssl', 'allow_self_signed', false);
 			$this->fp = stream_socket_client("tls://api.vndb.org:19535", $errno, $errstr, 60, STREAM_CLIENT_CONNECT, $context);
 		}
 		
