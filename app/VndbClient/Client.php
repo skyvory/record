@@ -20,8 +20,71 @@ class Client
 	
 	public function connect()
 	{
+		$context_options = [
+			'ssl' => [
+				'verify_peer' => true,
+				'local_cert' => 'isrgrootx1.pem',
+				'verify_peer_name' => true,
+				'allow_self_signed' => true,
+			]
+		];
 		$context = stream_context_create();
-		$this->fp = stream_socket_client("tls://api.vndb.org:19535", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
+		$target_protocol = 'tls';
+		if($target_protocol == 'tcp') {
+			$this->fp = stream_socket_client("tcp://api.vndb.org:19534", $errno, $errstr, 60, STREAM_CLIENT_CONNECT, $context);
+		}
+		else if($target_protocol == 'tls') {
+			// var_dump(getenv('OPENSSL_CONF'));
+			// $certificateData = array(
+			//     "countryName" => "UK",
+			//     "stateOrProvinceName" => "Texas",
+			//     "localityName" => "Houston",
+			//     "organizationName" => "example.com",
+			//     "organizationalUnitName" => "Development",
+			//     "commonName" => "Skyvory",
+			//     "emailAddress" => "re@outlook.sg"
+			// );
+
+			// $configArgs = array(
+			// 	'config' => 'C:\xampp\php\extras\openssl\openssl.cnf',
+			// );
+
+			// $privateKey = openssl_pkey_new($configArgs);
+			// while($message = openssl_error_string()){
+			//     echo $message.'<br />'.PHP_EOL;
+			// }
+			// var_dump(openssl_error_string());
+			// $certificate = openssl_csr_new($certificateData, $privateKey);
+			// $certificate = openssl_csr_sign($certificate, null, $privateKey, 365);
+
+
+			// $pem_passphrase = 'abracadabra';
+			// $pem = array();
+			// openssl_x509_export($certificate, $pem[0]);
+			// openssl_pkey_export($privateKey, $pem[1], $pem_passphrase);
+			// $pem = implode($pem);
+
+			// $pemfile = 'server.pem';
+			// file_put_contents($pemfile, $pem);
+
+
+
+
+
+
+
+			// stream_context_set_option($context, 'ssl', 'local_cert', 'isrgrootx1.pem');
+			// stream_context_set_option($context, 'ssl', 'local_cert', 'isrgrootx1.pem');
+			// stream_context_set_option($context, 'ssl', 'verify_peer', true);
+			stream_context_set_option($context, 'ssl', 'verify_peer_name', true);
+			stream_context_set_option($context, 'ssl', 'allow_self_signed', true);
+			// stream_context_set_option($context, 'ssl', 'passphrase', $pem_passphrase);
+
+			stream_context_set_option($context, 'ssl', 'verify_peer', false);
+			// stream_context_set_option($context, 'ssl', 'verify_peer_name', false);
+			// stream_context_set_option($context, 'ssl', 'allow_self_signed', false);
+			$this->fp = stream_socket_client("tls://api.vndb.org:19535", $errno, $errstr, 60, STREAM_CLIENT_CONNECT, $context);
+		}
 		
 		if (!$this->fp) {
 			echo "ERROR: $errstr ($errno)<br />\n";

@@ -12,9 +12,14 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Response;
 use App\Vn;
 use App\User;
+use App\Http\Controllers\ExtensionPlus;
+
+use Image;
 
 class VnController extends Controller
 {
+	use ExtensionPlus;
+
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
 	}
@@ -32,7 +37,7 @@ class VnController extends Controller
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
 			$q = $request->has('filter') ? $request->input('filter') : '';
 			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')
-					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
+					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_comedy', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
 					->where(function($query) use ($user) {
 						$query->where('assessments.user_id', $user->id);
 						$query->orwhere('assessments.user_id', null);
@@ -46,7 +51,7 @@ class VnController extends Controller
 		else {
 			$limit = $request->input('limit') ? $request->input('limit') : 10;
 			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')
-					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
+					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_comedy', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
 					->where('assessments.user_id', $user->id)
 					->orwhere('assessments.user_id', null)
 					->orderBy('created_at', 'desc')
@@ -92,6 +97,23 @@ class VnController extends Controller
 			$vn->vndb_vn_id = $request->input('vndb_vn_id');
 			$exec = $vn->save();
 			if($exec) {
+				// save remote image to local
+				$url = $request->input('image');
+				$local_filename = null;
+				if($url) {
+					$filename = basename($url);
+					$local_filename = $vn->id . "_" . $filename;
+					// using php copy function
+					// copy($url, 'reallocation/' . $filename);
+					// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
+					// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+					if($this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename)) {
+						// save local filename to database
+						$vn->local_image = $local_filename;
+						$vn->save();
+					}
+				}
+
 				return response()->json(["status" => "success"]);
 			}
 		}
@@ -169,6 +191,17 @@ class VnController extends Controller
 		if($allow == true) {
 			$vn = Vn::find($id);
 
+			$url = $request->input('image');
+			$existing_local_filename = $vn->local_image;
+			if($url) {
+				$filename = basename($url);
+				$local_filename = $id . "_" . $filename;
+				if($local_filename != $existing_local_filename) {
+					// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+					$this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename);
+				}
+			}
+
 			if($request->has('title_en')) {
 				$title_en = $request->input('title_en');
 				$vn->title_en = $title_en;
@@ -186,6 +219,7 @@ class VnController extends Controller
 				$vn->developer_id = $developer_id;
 			}
 			$vn->image = $request->has('image') ? $request->input('image') : null;
+			$vn->local_image = $local_filename;
 			if($request->has('date_release')) {
 				$date_release = $request->input('date_release');
 				$vn->date_release = $date_release;
