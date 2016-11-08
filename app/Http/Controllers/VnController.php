@@ -193,6 +193,7 @@ class VnController extends Controller
 
 			$url = $request->input('image');
 			$existing_local_filename = $vn->local_image;
+			$local_filename = "";
 			if($url) {
 				$filename = basename($url);
 				$local_filename = $id . "_" . $filename;
