@@ -69,12 +69,12 @@ class CharacterController extends Controller
 		$character->kanji = $request->input('kanji');
 		$character->betsumyou = $request->input('betsumyou');
 		$character->yobikata = $request->input('yobikata');
-		$character->birthmonth = $request->input('birthmonth');
-		$character->birthday = $request->input('birthday');
-		$character->height = $request->input('height');
-		$character->bust = $request->input('bust');
-		$character->waist = $request->input('waist');
-		$character->hip = $request->input('hip');
+		$character->birthmonth = !empty(trim($request->input('birthmonth'))) ? $request->input('birthmonth') : null;
+		$character->birthday = !empty(trim($request->input('birthday'))) ? $request->input('birthday') : null;
+		$character->height = !empty(trim($request->input('height'))) ? $request->input('height') : null;
+		$character->bust = !empty(trim($request->input('bust'))) ? $request->input('bust') : null;
+		$character->waist = !empty(trim($request->input('waist'))) ? $request->input('waist') : null;
+		$character->hip = !empty(trim($request->input('hip'))) ? $request->input('hip') : null;
 		$character->image = $request->input('image');
 		$character->vndb_character_id = $request->input('vndb_character_id');
 		if(Gate::denies('store-character', $character)) {
@@ -162,12 +162,12 @@ class CharacterController extends Controller
 		$character->kanji = $request->input('kanji');
 		$character->betsumyou = $request->input('betsumyou');
 		$character->yobikata = $request->input('yobikata');
-		$character->birthmonth = $request->input('birthmonth');
-		$character->birthday = $request->input('birthday');
-		$character->height = $request->input('height');
-		$character->bust = $request->input('bust');
-		$character->waist = $request->input('waist');
-		$character->hip = $request->input('hip');
+		$character->birthmonth = !empty(trim($request->input('birthmonth'))) ? $request->input('birthmonth') : null;
+		$character->birthday = !empty(trim($request->input('birthday'))) ? $request->input('birthday') : null;
+		$character->height = !empty(trim($request->input('height'))) ? $request->input('height') : null;
+		$character->bust = !empty(trim($request->input('bust'))) ? $request->input('bust') : null;
+		$character->waist = !empty(trim($request->input('waist'))) ? $request->input('waist') : null;
+		$character->hip = !empty(trim($request->input('hip'))) ? $request->input('hip') : null;
 		$character->image = $request->input('image');
 		$character->local_image = $local_filename;
 		$character->vndb_character_id = $request->input('vndb_character_id');
