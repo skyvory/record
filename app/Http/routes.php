@@ -37,13 +37,13 @@ Route::group(['prefix' => 'api'], function() {
 	Route::resource('lineament', 'LineamentController', ['except' => ['create', 'edit']]);
 	Route::resource('note', 'NoteController', ['except' => ['create', 'edit']]);
 	Route::resource('stock', 'StockController', ['except' => ['create', 'edit']]);
-});
 
-Route::group(['prefix' => 'vndb'], function() {
-	Route::post('/dbstat', 'VndbController@dbstat');
-	Route::post('/vn', 'VndbController@vn');
-	Route::post('/release', 'VndbController@release');
-	Route::post('/character', 'VndbController@character');
-	Route::post('/setVote', 'VndbController@setVote');
-	Route::post('/setStatus', 'VndbController@setStatus');
+	Route::group(['prefix' => 'vndb'], function() {
+		Route::post('/dbstat', 'VndbController@dbstat');
+		Route::post('/vn', 'VndbController@vn');
+		Route::post('/release', 'VndbController@release');
+		Route::post('/character', 'VndbController@character');
+		Route::post('/setVote', 'VndbController@setVote');
+		Route::post('/setStatus', 'VndbController@setStatus');
+	});
 });
