@@ -32,7 +32,10 @@ Route::group(['prefix' => 'api'], function() {
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit']]);
 	Route::resource('vn', 'VnController', ['except' => ['create', 'edit']]);
 	Route::resource('assessment', 'AssessmentController', ['except' => ['create', 'edit']]);
-	Route::resource('character', 'CharacterController', ['except' => ['create', 'edit']]);
+	Route::resource('character', 'CharacterController', ['except' => ['index', 'create', 'edit']]);
+	Route::group(['prefix' => 'character'], function() {
+		Route::get('/', 'CharacterController@getCharacters');
+	});
 	Route::resource('developer', 'DeveloperController', ['except' => ['create', 'edit']]);
 	Route::resource('lineament', 'LineamentController', ['except' => ['create', 'edit']]);
 	Route::resource('note', 'NoteController', ['except' => ['create', 'edit']]);

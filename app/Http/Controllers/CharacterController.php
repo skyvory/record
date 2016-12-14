@@ -46,6 +46,29 @@ class CharacterController extends Controller
 
 	}
 
+	public function getCharacters(Request $request)
+	{
+		$vn_id = $request->input('vn_id');
+		$user = JWTAuth::parseToken()->authenticate();
+
+		if(!empty($vn_id)) {
+			$character = Character::leftJoin('lineaments', function($join) use ($user)
+			{
+				$join->on('lineaments.character_id', '=', 'characters.id');
+				$join->on('lineaments.user_id', '=', \DB::raw($user->id));
+			})
+			->select('characters.*', 'lineaments.note', 'lineaments.mark', 'lineaments.id as lineament_id')
+			->where('vn_id', $vn_id)
+			->orderBy('characters.id')
+			->get();
+			return response()->json(['data' => $character]);
+		}
+		else {
+			$character = Character::orderBy('yobikata')->paginate(10);
+			return response()->json($character);
+		}
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
