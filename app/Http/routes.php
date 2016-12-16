@@ -31,7 +31,10 @@ Route::group(['prefix' => 'api'], function() {
 	// resource routing
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit']]);
 	Route::resource('vn', 'VnController', ['except' => ['create', 'edit']]);
-	Route::resource('assessment', 'AssessmentController', ['except' => ['create', 'edit']]);
+	Route::resource('assessment', 'AssessmentController', ['except' => ['index', 'create', 'edit']]);
+	Route::group(['prefix' => 'assessment'], function() {
+		Route::get('/', 'AssessmentController@getAssessments');
+	});
 	Route::resource('character', 'CharacterController', ['except' => ['index', 'create', 'edit']]);
 	Route::group(['prefix' => 'character'], function() {
 		Route::get('/', 'CharacterController@getCharacters');

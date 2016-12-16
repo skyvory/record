@@ -35,6 +35,43 @@ class AssessmentController extends Controller
 		return response()->json($assessment);
 	}
 
+	public function getAssessments(Request $request)
+	{
+		$user = JWTAuth::parseToken()->authenticate();
+		$per_page = $request->input('limit') ? $request->input('limit') : 10;
+		$search_query = $request->has('filter') ? $request->input('filter') : null;
+		$search_query = explode(" ", $search_query);
+
+		$assessments = Assessment::leftJoin('vn', function($join) use ($user)
+		{
+			$join->on('vn.id', '=', 'assessments.vn_id');
+		})
+		->select('vn.*',
+			'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_comedy', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
+		->where(function($query) use ($user) {
+			$query->where('assessments.user_id', $user->id);
+		})
+		;
+
+		if($search_query) {
+			foreach ($search_query as $q) {
+				$assessments = $assessments->where(function($query) use ($q) {
+					$query->where('title_en', 'like', '%' . $q . '%')
+					->orwhere('title_jp', 'like', '%' . $q . '%')
+					;
+				});
+			}
+		}
+
+		$assessments = $assessments->orderBy('assessments.created_at', 'desc')->paginate($per_page);
+
+		if(Gate::denies('index-assessment', $assessments)) {
+			abort(403);
+		}
+
+		return response()->json($assessments);
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
