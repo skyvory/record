@@ -69,7 +69,48 @@ class VnController extends Controller
 	 */
 	public function create()
 	{
-		// not used as of restful purpose
+		if($request->user()->isCommon()) {
+			$allow = true;
+		}
+		else {
+			return "your another annoying rejection";
+		}
+
+		if($allow === true) {
+			$vn = new Vn();
+			$vn->title_en = $request->input('title_en');
+			$vn->title_jp = $request->input('title_jp');
+			$vn->hashtag = $request->input('hashtag');
+			$vn->developer_id = $request->input('developer_id');
+			$vn->date_release = $request->input('date_release');
+			$vn->image = $request->input('image');
+			$vn->vndb_vn_id = $request->input('vndb_vn_id');
+			$exec = $vn->save();
+			if($exec) {
+				// save remote image to local
+				$url = $request->input('image');
+				$local_filename = null;
+				if($url) {
+					$filename = basename($url);
+					$local_filename = $vn->id . "_" . $filename;
+					// using php copy function
+					// copy($url, 'reallocation/' . $filename);
+					// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
+					// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+					if($this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename)) {
+						// save local filename to database
+						$vn->local_image = $local_filename;
+						$vn->save();
+					}
+				}
+
+				if($request->has('related_vn_id'))
+					$this->relateVn($vn->id, $request->input('related_vn_id'));
+
+				return response()->json(["status" => "success"]);
+			}
+		}
+	}
 
 	private function relateVn($parent_vn_id, $child_vn_id) {
 		if(!empty($parent_vn_id) && !empty($child_vn_id)) {

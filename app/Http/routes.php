@@ -30,7 +30,10 @@ Route::group(['prefix' => 'api'], function() {
 	// resource utilize default handle of action provided by resource controller
 	// resource routing
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit']]);
-	Route::resource('vn', 'VnController', ['except' => ['create', 'edit']]);
+	Route::resource('vn', 'VnController', ['except' => ['store', 'edit']]);
+	Route::group(['prefix' => 'vn'], function() {
+		Route::post('/', 'VnController@create');
+	});
 	Route::resource('assessment', 'AssessmentController', ['except' => ['index', 'create', 'edit']]);
 	Route::group(['prefix' => 'assessment'], function() {
 		Route::get('/', 'AssessmentController@getAssessments');
