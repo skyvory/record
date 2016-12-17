@@ -99,6 +99,7 @@ class CharacterController extends Controller
 		$character->bust = !empty(trim($request->input('bust'))) ? $request->input('bust') : null;
 		$character->waist = !empty(trim($request->input('waist'))) ? $request->input('waist') : null;
 		$character->hip = !empty(trim($request->input('hip'))) ? $request->input('hip') : null;
+		$character->blood_type = !empty(trim($request->input('blood_type'))) ? $request->input('blood_type') : null;
 		$character->image = $request->input('image');
 		$character->vndb_character_id = $request->input('vndb_character_id');
 		if(Gate::denies('store-character', $character)) {
@@ -193,6 +194,7 @@ class CharacterController extends Controller
 		$character->bust = !empty(trim($request->input('bust'))) ? $request->input('bust') : null;
 		$character->waist = !empty(trim($request->input('waist'))) ? $request->input('waist') : null;
 		$character->hip = !empty(trim($request->input('hip'))) ? $request->input('hip') : null;
+		$character->blood_type = !empty(trim($request->input('blood_type'))) ? $request->input('blood_type') : null;
 		$character->image = $request->input('image');
 		$character->local_image = $local_filename;
 		$character->vndb_character_id = $request->input('vndb_character_id');
