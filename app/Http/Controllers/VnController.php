@@ -12,6 +12,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Response;
 use App\Vn;
 use App\User;
+use App\VnRelation;
 use App\Http\Controllers\ExtensionPlus;
 
 use Image;
@@ -69,6 +70,41 @@ class VnController extends Controller
 	public function create()
 	{
 		// not used as of restful purpose
+
+	private function relateVn($parent_vn_id, $child_vn_id) {
+		if(!empty($parent_vn_id) && !empty($child_vn_id)) {
+			\DB::beginTransaction();
+			try {
+				$parent_relation = VnRelation::firstOrNew(['vn_id' => $parent_vn_id]);
+				if(is_null($parent_relation->group_id)) {
+					$max_group_id = VnRelation::max('group_id') || 0;
+					if(!$max_group_id) {
+						$max_group_id++;
+					}
+					$parent_relation->group_id = $max_group_id;
+				}
+				$parent_relation->vn_id = $parent_vn_id;
+				$exec_parent_relation = $parent_relation->save();
+
+				$child_relation = VnRelation::firstOrNew(['vn_id' => $child_vn_id]);
+				if(is_null($child_relation->group_id)) {
+					$child_relation->group_id = $parent_relation->group_id;
+				}
+				$child_relation->vn_id = $child_vn_id;
+				$exec_child_relation = $child_relation->save();
+			} catch (\Exception $e) {
+				\DB::rollback();
+				throw($e);
+			}
+			if($exec_parent_relation && $exec_child_relation) {
+				\DB::commit();
+				return true;
+			}
+			else {
+				\DB::rollback();
+				throw new \Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+			}
+		}
 	}
 
 	/**
