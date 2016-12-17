@@ -102,6 +102,7 @@ class CharacterController extends Controller
 		$character->hip = !empty(trim($request->input('hip'))) ? $request->input('hip') : null;
 		$character->blood_type = !empty(trim($request->input('blood_type'))) ? $request->input('blood_type') : null;
 		$character->image = $request->input('image');
+		$character->description = !empty(trim($request->input('description'))) ? $request->input('description') : null;
 		$character->vndb_character_id = $request->input('vndb_character_id');
 		if(Gate::denies('store-character', $character)) {
 			abort(403);
@@ -199,6 +200,7 @@ class CharacterController extends Controller
 		$character->blood_type = !empty(trim($request->input('blood_type'))) ? $request->input('blood_type') : null;
 		$character->image = $request->input('image');
 		$character->local_image = $local_filename;
+		$character->description = !empty(trim($request->input('description'))) ? $request->input('description') : null;
 		$character->vndb_character_id = $request->input('vndb_character_id');
 		$exec = $character->save();
 		if($exec) {
