@@ -304,6 +304,10 @@ class VnController extends Controller
 			}
 			$vn->vndb_vn_id = $request->has('vndb_vn_id') ? $request->input('vndb_vn_id') : null;
 			$exec = $vn->save();
+
+			if($request->has('related_vn_id'))
+				$this->relateVn($vn->id, $request->input('related_vn_id'));
+			
 			if($exec) {
 				return response()->json(["status" => "success"]);
 			}
