@@ -95,6 +95,7 @@ class CharacterController extends Controller
 		$character->birthmonth = !empty(trim($request->input('birthmonth'))) ? $request->input('birthmonth') : null;
 		$character->birthday = !empty(trim($request->input('birthday'))) ? $request->input('birthday') : null;
 		$character->height = !empty(trim($request->input('height'))) ? $request->input('height') : null;
+		$character->weight = !empty(trim($request->input('weight'))) ? $request->input('weight') : null;
 		$character->bust = !empty(trim($request->input('bust'))) ? $request->input('bust') : null;
 		$character->waist = !empty(trim($request->input('waist'))) ? $request->input('waist') : null;
 		$character->hip = !empty(trim($request->input('hip'))) ? $request->input('hip') : null;
@@ -188,6 +189,7 @@ class CharacterController extends Controller
 		$character->birthmonth = !empty(trim($request->input('birthmonth'))) ? $request->input('birthmonth') : null;
 		$character->birthday = !empty(trim($request->input('birthday'))) ? $request->input('birthday') : null;
 		$character->height = !empty(trim($request->input('height'))) ? $request->input('height') : null;
+		$character->weight = !empty(trim($request->input('weight'))) ? $request->input('weight') : null;
 		$character->bust = !empty(trim($request->input('bust'))) ? $request->input('bust') : null;
 		$character->waist = !empty(trim($request->input('waist'))) ? $request->input('waist') : null;
 		$character->hip = !empty(trim($request->input('hip'))) ? $request->input('hip') : null;
