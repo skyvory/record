@@ -62,6 +62,28 @@ class VnController extends Controller
 		return $vn->toJson();
 	}
 
+	function getVns(Request $request)
+	{
+		$title = "VN List";
+		$user = JWTAuth::parseToken()->authenticate();
+		$per_page = $request->has('limit') ? $request->input('limit') : 10;
+		$search_query = $request->has('filter') ? $request->input('filter') : null;
+		$search_query = explode(" ", $search_query);
+
+		$vns = Vn::select('*');
+		if($search_query) {
+			foreach($search_query as $q) {
+				$vns = $vns->where(function($query) use ($q) {
+					$query->where('title_en', 'like', '%' . $q . '%')
+					->orwhere('title_jp', 'like', '%' . $q . '%');
+				});
+			}
+		}
+		$vns = $vns->orderBy('id', 'desc')->paginate($per_page);
+		
+		return response()->json($vns);
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
