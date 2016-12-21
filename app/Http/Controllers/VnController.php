@@ -267,7 +267,15 @@ class VnController extends Controller
 	{
 		try {
 			$vn = Vn::find($id);
+			$res = [];
 			if($vn) {
+				$relation_group_id = VnRelation::where('vn_id', $id)->first()['group_id'];
+				$relations = VnRelation::select('vn.*')
+				->join('vn', 'vn.id', '=', 'vn_relations.vn_id')
+				->where('vn_relations.group_id', $relation_group_id)
+				->where('vn_relations.vn_id', '!=', $id)
+				->get();
+
 				$res = [
 					'id' => $id,
 					'title_en' => $vn->title_en,
@@ -278,7 +286,8 @@ class VnController extends Controller
 					'created_at' => $vn->created_at,
 					'updated_at' => $vn->updated_at,
 					'image' => $vn->image,
-					'vndb_vn_id' => $vn->vndb_vn_id
+					'vndb_vn_id' => $vn->vndb_vn_id,
+					'relations' => $relations
 				];
 			}
 			else {
