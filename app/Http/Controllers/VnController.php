@@ -263,6 +263,39 @@ class VnController extends Controller
 		}
 	}
 
+	public function getVn($id)
+	{
+		try {
+			$vn = Vn::find($id);
+			if($vn) {
+				$res = [
+					'id' => $id,
+					'title_en' => $vn->title_en,
+					'title_jp' => $vn->title_jp,
+					'hashtag' => $vn->hashtag,
+					'developer_id' => $vn->developer_id,
+					'date_release' => $vn->date_release,
+					'created_at' => $vn->created_at,
+					'updated_at' => $vn->updated_at,
+					'image' => $vn->image,
+					'vndb_vn_id' => $vn->vndb_vn_id
+				];
+			}
+			else {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('No VN withsuch ID');
+			}
+		}
+		catch(Exception $e) {
+			throw($e);
+		}
+		finally {
+			$compact = array(
+				'data' => $res
+				);
+			return response()->json($compact);
+		}
+	}
+
 	/**
 	 * Show the form for editing the specified resource.
 	 *
@@ -329,7 +362,7 @@ class VnController extends Controller
 
 			if($request->has('related_vn_id'))
 				$this->relateVn($vn->id, $request->input('related_vn_id'));
-			
+
 			if($exec) {
 				return response()->json(["status" => "success"]);
 			}
