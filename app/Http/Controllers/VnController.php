@@ -70,7 +70,7 @@ class VnController extends Controller
 		$search_query = $request->has('filter') ? $request->input('filter') : null;
 		$search_query = explode(" ", $search_query);
 
-		$vns = Vn::select('*');
+		$vns = Vn::select('vn.*', 'developers.name_en as developer_name_en', 'developers.name_jp as developer_name_jp')->leftJoin('developers', 'developers.id', '=', 'vn.developer_id');
 		if($search_query) {
 			foreach($search_query as $q) {
 				$vns = $vns->where(function($query) use ($q) {
