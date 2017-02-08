@@ -14,6 +14,7 @@ use Gate;
 use App\Assessment;
 use App\User;
 use App\AssessmentHistory;
+use Illuminate\Pagination\Paginator;
 
 class AssessmentController extends Controller
 {
@@ -39,8 +40,16 @@ class AssessmentController extends Controller
 	{
 		$user = JWTAuth::parseToken()->authenticate();
 		$per_page = $request->input('limit') ? $request->input('limit') : 10;
+		$current_page = $request->has('page') ? $request->input('page') : 1;
 		$search_query = $request->has('filter') ? $request->input('filter') : null;
 		$search_query = explode(" ", $search_query);
+
+		if($current_page) {
+			// set current page programatically
+			Paginator::currentPageResolver(function() use ($current_page) {
+				return $current_page;
+			});
+		}
 
 		$assessments = Assessment::leftJoin('vn', function($join) use ($user)
 		{
@@ -71,6 +80,7 @@ class AssessmentController extends Controller
 
 		return response()->json($assessments);
 	}
+
 
 	/**
 	 * Show the form for creating a new resource.
