@@ -43,6 +43,7 @@ class AssessmentController extends Controller
 		$current_page = $request->has('page') ? $request->input('page') : 1;
 		$search_query = $request->has('filter') ? $request->input('filter') : null;
 		$search_query = explode(" ", $search_query);
+		$filter_vn_id = $request->has('vn_id') ? $request->input('vn_id') : null;
 
 		if($current_page) {
 			// set current page programatically
@@ -61,6 +62,10 @@ class AssessmentController extends Controller
 			$query->where('assessments.user_id', $user->id);
 		})
 		;
+
+		if($filter_vn_id) {
+			$assessments = $assessments->where('vn_id', $filter_vn_id);
+		}
 
 		if($search_query) {
 			foreach ($search_query as $q) {
