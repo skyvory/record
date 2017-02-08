@@ -36,9 +36,10 @@ Route::group(['prefix' => 'api'], function() {
 		Route::post('/', 'VnController@create');
 		Route::get('/{id}', 'VnController@getVn');
 	});
-	Route::resource('assessment', 'AssessmentController', ['except' => ['index', 'create', 'edit']]);
+	Route::resource('assessment', 'AssessmentController', ['except' => ['index', 'show', 'create', 'edit']]);
 	Route::group(['prefix' => 'assessment'], function() {
 		Route::get('/', 'AssessmentController@getAssessments');
+		Route::get('/{id}', 'AssessmentController@getOneAssessment');
 	});
 	Route::resource('character', 'CharacterController', ['except' => ['index', 'create', 'edit']]);
 	Route::group(['prefix' => 'character'], function() {

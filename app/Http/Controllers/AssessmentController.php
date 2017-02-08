@@ -166,6 +166,14 @@ class AssessmentController extends Controller
 		}
 	}
 
+	public function getOneAssessment($id)
+	{
+		$user = JWTAuth::parseToken()->authenticate();
+		$assessment = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('assessments.*', 'vn.vndb_vn_id')->where('user_id', $user->id)->where('assessments.id', $id)->first();
+
+		return response()->json($assessment);
+	}
+
 	/**
 	 * Show the form for editing the specified resource.
 	 *
