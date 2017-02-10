@@ -56,8 +56,8 @@ class AssessmentController extends Controller
 		{
 			$join->on('vn.id', '=', 'assessments.vn_id');
 		})
-		->select('vn.*',
-			'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_comedy', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
+		->select('vn.title_en', 'vn.title_jp', 'vn.hashtag', 'vn.developer_id', 'vn.date_release', 'vn.image', 'vn.local_image', 'vn.vndb_vn_id',
+			'assessments.*')
 		->where(function($query) use ($user) {
 			$query->where('assessments.user_id', $user->id);
 		})
