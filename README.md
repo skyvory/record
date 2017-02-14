@@ -38,4 +38,16 @@ Targeted for content with low-quality story and particularly from some extent to
 #### - Mark
 Favoritism point in letter-grade rank towards stated character  
 
+
+# Dev Guidelines
+## Response convention
+If possible, always include these properties on every returned JSON response.
+Format:
+response: {
+	meta: {
+		message: [string:message describing whatever],
+	},
+	data: your data to return here
+}
+
 0x04
