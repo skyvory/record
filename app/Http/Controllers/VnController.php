@@ -12,7 +12,8 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Response;
 use App\Vn;
 use App\User;
-use App\VnRelation;
+use App\VnGroup;
+use App\VnGroupRelation;
 use App\Http\Controllers\ExtensionPlus;
 
 use Image;
@@ -134,39 +135,52 @@ class VnController extends Controller
 		}
 	}
 
+	// Parent means the target vn_id of which the child is going to be attached to. Conscise example is with child id being the VN in update page while the parent id would go to related_vn_id field
 	private function relateVn($parent_vn_id, $child_vn_id) {
 		if(!empty($parent_vn_id) && !empty($child_vn_id)) {
+			
+			$distinct_group_count = VnGroupRelation::where('vn_id', $parent_vn_id)->orWhere('vn_id', $child_vn_id)->groupBy('vn_group_id')->get()->count();
+			if($distinct_group_count > 1)
+				throw new \Symfony\Component\HttpKernel\Exception\ConflictHttpException('Grouping a VN into multiple group is not supported.');
+
+			$existing_relations = VnGroupRelation::where('vn_id', $parent_vn_id)->orWhere('vn_id', $child_vn_id)->get();
 			\DB::beginTransaction();
 			try {
-				$parent_relation = VnRelation::firstOrNew(['vn_id' => $parent_vn_id]);
-				if(is_null($parent_relation->group_id)) {
-					$max_group_id = VnRelation::max('group_id') || 0;
-					if(!$max_group_id) {
-						$max_group_id++;
-					}
-					$parent_relation->group_id = $max_group_id;
+				// The case where there's no existing group yet
+				if($existing_relations->count() < 1) {
+					$group = new VnGroup();
+					$group->save();
+					$group_id = $group->id;
 				}
-				$parent_relation->vn_id = $parent_vn_id;
-				$exec_parent_relation = $parent_relation->save();
+				else {
+					// Pointing into the first array of existing_relations will definitely getting the right group id even with only one record returned by eloquent
+					$group_id = $existing_relations[0]['vn_group_id'];
+				}
 
-				$child_relation = VnRelation::firstOrNew(['vn_id' => $child_vn_id]);
-				if(is_null($child_relation->group_id)) {
-					$child_relation->group_id = $parent_relation->group_id;
+				// Parent check and insert if null
+				$parent_existence = VnGroupRelation::where('vn_id', $parent_vn_id)->where('vn_group_id', $group_id)->first();
+				if($parent_existence === null) {
+					$parent = new VnGroupRelation();
+					$parent->vn_id = $parent_vn_id;
+					$parent->vn_group_id = $group_id;
+					$parent->save();
 				}
-				$child_relation->vn_id = $child_vn_id;
-				$exec_child_relation = $child_relation->save();
+
+				// Child check and insert if null
+				$child_existence = VnGroupRelation::where('vn_id', $child_vn_id)->where('vn_group_id', $group_id)->first();
+				if($child_existence === null) {
+					$child = new VnGroupRelation();
+					$child->vn_id = $child_vn_id;
+					$child->vn_group_id = $group_id;
+					$child->save();
+				}
 			} catch (\Exception $e) {
 				\DB::rollback();
 				throw($e);
 			}
-			if($exec_parent_relation && $exec_child_relation) {
-				\DB::commit();
-				return true;
-			}
-			else {
-				\DB::rollback();
-				throw new \Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-			}
+			
+			\DB::commit();
+			return true;
 		}
 	}
 
