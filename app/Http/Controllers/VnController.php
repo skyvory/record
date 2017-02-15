@@ -178,7 +178,7 @@ class VnController extends Controller
 				\DB::rollback();
 				throw($e);
 			}
-			
+
 			\DB::commit();
 			return true;
 		}
@@ -281,16 +281,16 @@ class VnController extends Controller
 	{
 		try {
 			$vn = Vn::find($id);
-			$res = [];
+			$vn_simplified = [];
 			if($vn) {
-				$relation_group_id = VnRelation::where('vn_id', $id)->first()['group_id'];
-				$relations = VnRelation::select('vn.*')
-				->join('vn', 'vn.id', '=', 'vn_relations.vn_id')
-				->where('vn_relations.group_id', $relation_group_id)
-				->where('vn_relations.vn_id', '!=', $id)
+				$vn_group_id = VnGroupRelation::where('vn_id', $id)->first()['vn_group_id'];
+				$relations = VnGroupRelation::select('vn.*')
+				->join('vn', 'vn.id', '=', 'vn_group_relations.vn_id')
+				->where('vn_group_relations.vn_group_id', $vn_group_id)
+				->where('vn_group_relations.vn_id', '!=', $id)
 				->get();
 
-				$res = [
+				$vn_simplified = [
 					'id' => $id,
 					'title_en' => $vn->title_en,
 					'title_jp' => $vn->title_jp,
@@ -313,7 +313,7 @@ class VnController extends Controller
 		}
 		finally {
 			$compact = array(
-				'data' => $res
+				'data' => $vn_simplified
 				);
 			return response()->json($compact);
 		}
