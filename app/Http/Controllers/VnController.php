@@ -103,6 +103,7 @@ class VnController extends Controller
 			$vn = new Vn();
 			$vn->title_en = $request->input('title_en');
 			$vn->title_jp = $request->input('title_jp');
+			$vn->alias = $request->input('alias');
 			$vn->hashtag = $request->input('hashtag');
 			$vn->developer_id = $request->input('developer_id');
 			$vn->date_release = $request->input('date_release');
@@ -316,6 +317,7 @@ class VnController extends Controller
 					'id' => $id,
 					'title_en' => $vn->title_en,
 					'title_jp' => $vn->title_jp,
+					'alias' => $vn->alias,
 					'hashtag' => $vn->hashtag,
 					'developer_id' => $vn->developer_id,
 					'date_release' => $vn->date_release,
@@ -387,6 +389,10 @@ class VnController extends Controller
 			if($request->has('title_jp')) {
 				$title_jp = $request->input('title_jp');
 				$vn->title_jp = $title_jp;
+			}
+			if($request->has('alias')) {
+				$alias = $request->input('alias');
+				$vn->alias = $alias;
 			}
 			if($request->has('hashtag')) {
 				$hashtag = $request->input('hashtag');
