@@ -35,6 +35,7 @@ Route::group(['prefix' => 'api'], function() {
 		Route::get('/', 'VnController@getVns');
 		Route::post('/', 'VnController@create');
 		Route::get('/{id}', 'VnController@getVn');
+		Route::post('/removeRelation', 'VnController@removeRelation');
 	});
 	Route::resource('assessment', 'AssessmentController', ['except' => ['index', 'show', 'create', 'edit']]);
 	Route::group(['prefix' => 'assessment'], function() {

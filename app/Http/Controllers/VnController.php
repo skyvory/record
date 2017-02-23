@@ -184,6 +184,28 @@ class VnController extends Controller
 		}
 	}
 
+	public function removeRelation(Request $request)
+	{
+		$this->validate($request, [
+			'vn_group_id' => 'required|integer|min:1',
+			'vn_id' => 'required|integer|min:1'
+		]);
+
+		$vn_group_id = $request->input('vn_group_id');
+		$vn_id = $request->input('vn_id');
+
+		$relation = VnGroupRelation::where('vn_group_id', $vn_group_id)->where('vn_id', $vn_id)->first();
+
+		if($relation)
+			$exec = VnGroupRelation::where('vn_group_id', $vn_group_id)->where('vn_id', $vn_id)->delete();
+		else
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('No record found with proposed qualifier.');
+		if($exec)
+			return response()->json(["status" => "success"]);
+		else
+			throw new \Symfony\Component\HttpKernel\Exception\HttpException('Unknown database error.');
+	}
+
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -284,7 +306,7 @@ class VnController extends Controller
 			$vn_simplified = [];
 			if($vn) {
 				$vn_group_id = VnGroupRelation::where('vn_id', $id)->first()['vn_group_id'];
-				$relations = VnGroupRelation::select('vn.*')
+				$relations = VnGroupRelation::select('vn_group_id as group_id', 'vn.*')
 				->join('vn', 'vn.id', '=', 'vn_group_relations.vn_id')
 				->where('vn_group_relations.vn_group_id', $vn_group_id)
 				->where('vn_group_relations.vn_id', '!=', $id)
