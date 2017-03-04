@@ -2,7 +2,30 @@
 
 return [
 
-'env' => env('APP_ENV', 'production'),
+	/*
+	|--------------------------------------------------------------------------
+	| Application Name
+	|--------------------------------------------------------------------------
+	|
+	| This value is the name of your application. This value is used when the
+	| framework needs to place the application's name in a notification or
+	| any other location as required by the application or its packages.
+	*/
+
+	'name' => 'Record',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Application Environment
+	|--------------------------------------------------------------------------
+	|
+	| This value determines the "environment" your application is currently
+	| running in. This may determine how you prefer to configure various
+	| services your application utilizes. Set this in your ".env" file.
+	|
+	*/
+
+	'env' => env('APP_ENV', 'production'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -136,6 +159,7 @@ return [
 		Illuminate\Translation\TranslationServiceProvider::class,
 		Illuminate\Validation\ValidationServiceProvider::class,
 		Illuminate\View\ViewServiceProvider::class,
+		Illuminate\Notifications\NotificationServiceProvider::class,
 
 		/*
 		 * Application Service Providers...
@@ -144,6 +168,11 @@ return [
 		App\Providers\AuthServiceProvider::class,
 		App\Providers\EventServiceProvider::class,
 		App\Providers\RouteServiceProvider::class,
+		// App\Providers\BroadcastServiceProvider::class,
+
+		/*
+		* Custom Service Providers
+		*/
 		Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
 		Intervention\Image\ImageServiceProvider::class,
 
@@ -166,7 +195,7 @@ return [
 		'Artisan'   => Illuminate\Support\Facades\Artisan::class,
 		'Auth'      => Illuminate\Support\Facades\Auth::class,
 		'Blade'     => Illuminate\Support\Facades\Blade::class,
-		'Bus'       => Illuminate\Support\Facades\Bus::class,
+		// 'Bus'       => Illuminate\Support\Facades\Bus::class,
 		'Cache'     => Illuminate\Support\Facades\Cache::class,
 		'Config'    => Illuminate\Support\Facades\Config::class,
 		'Cookie'    => Illuminate\Support\Facades\Cookie::class,
@@ -177,11 +206,12 @@ return [
 		'File'      => Illuminate\Support\Facades\File::class,
 		'Gate'      => Illuminate\Support\Facades\Gate::class,
 		'Hash'      => Illuminate\Support\Facades\Hash::class,
-		'Input'     => Illuminate\Support\Facades\Input::class,
-		'Inspiring' => Illuminate\Foundation\Inspiring::class,
+		// 'Input'     => Illuminate\Support\Facades\Input::class,
+		// 'Inspiring' => Illuminate\Foundation\Inspiring::class,
 		'Lang'      => Illuminate\Support\Facades\Lang::class,
 		'Log'       => Illuminate\Support\Facades\Log::class,
 		'Mail'      => Illuminate\Support\Facades\Mail::class,
+        'Notification' => Illuminate\Support\Facades\Notification::class,
 		'Password'  => Illuminate\Support\Facades\Password::class,
 		'Queue'     => Illuminate\Support\Facades\Queue::class,
 		'Redirect'  => Illuminate\Support\Facades\Redirect::class,
