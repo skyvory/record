@@ -1,10 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
+use Log;
 
 trait ExtensionPlus
 {
 	public function saveRemoteImage($url, $target_directory) {
+		$is_success = false;
+		for ($iteration=0; $iteration < 3; $iteration++) { 
+			$is_success = $this->processSaveRemoteImage($url, $target_directory);
+			if($is_success) {
+				break;
+			}
+		}
+		if($is_success)
+			return true;
+		else {
+			Log::error('Fail to save image after ' . $iteration . ' attempts.');
+			return false;
+		}
+	}
+
+	protected function requestRemoteData($url) {
 		$header = null;
 		$body = null;
 		try{
@@ -36,52 +53,67 @@ trait ExtensionPlus
 			list($header, $body) = explode("\r\n\r\n", $raw, 2);
 
 			curl_close ($ch);
-
-
-			$source_image_size = $this->parseHeaderContentLength($header);
-
-			$is_image_write_required = false;
-			// Check if same file exist and archive if exist but with different size
-			if(file_exists($target_directory)) {
-				if($source_image_size == filesize($target_directory)) {
-					// Exact same file no need to write file
-					$is_image_write_required = false;
-				}
-				else {
-					// Rename old file for archive
-					$existing_image_date = exif_imagetype($target_directory) != false ? date('YmdHis', filemtime($target_directory)) : 'ArchivedOn' . date('YmdHiS');
-					$path_parts = pathinfo($target_directory);
-					$archive_target_directory = $path_parts['dirname'] . '\\' . $path_parts['filename'] . '_' . $existing_image_date . '.' . $path_parts['extension'];
-					rename($target_directory, $archive_target_directory);
-
-					$is_image_write_required = true;
-				}
-			}
-			else {
-				$is_image_write_required = true;
-			}
-
-			$fp = fopen($target_directory, 'x');
-			$written_byte = fwrite($fp, $body);
-			fclose($fp);
-
-			// Check if saved image has the same size as the source
-			$save_success = false;
-			if($source_image_size == filesize($target_directory) && $source_image_size == $written_byte) {
-				// Check if saved image is valid as an image
-				if(exif_imagetype($target_directory) != false) {
-					$save_success = true;
-				}
-			}
-
 		}
 		catch(\Exception $e) {
-			trigger_error(sprintf(
+			Log::error(sprintf(
 				'curl failed with error #%d: %s',
-				$e->getCode(), $e->getMessage()),
-			E_USER_ERROR);
+				$e->getCode(), $e->getMessage()));
+			// trigger_error(sprintf(
+			// 	'curl failed with error #%d: %s',
+			// 	$e->getCode(), $e->getMessage()),
+			// E_USER_ERROR);
+			return false;
 		}
-		return true;
+
+		return array('header' => $header, 'body' => $body);
+	}
+
+	public function processSaveRemoteImage($url, $target_directory) {
+		$image_data = $this->requestRemoteData($url);
+		if($image_data == false) {
+			return false;
+		}
+		$header = $image_data['header'];
+		$body = $image_data['body'];
+
+		$source_image_size = $this->parseHeaderContentLength($header);
+
+		$is_image_write_required = false;
+		// Check if same file exist and archive if exist but with different size
+		if(file_exists($target_directory)) {
+			if($source_image_size == filesize($target_directory)) {
+				// Exact same file no need to write file
+				$is_image_write_required = false;
+			}
+			else {
+				// Rename old file for archive
+				$existing_image_date = exif_imagetype($target_directory) != false ? date('YmdHis', filemtime($target_directory)) : 'ArchivedOn' . date('YmdHiS');
+				$path_parts = pathinfo($target_directory);
+				$archive_target_directory = $path_parts['dirname'] . '\\' . $path_parts['filename'] . '_' . $existing_image_date . '.' . $path_parts['extension'];
+				rename($target_directory, $archive_target_directory);
+
+				$is_image_write_required = true;
+			}
+		}
+		else {
+			$is_image_write_required = true;
+		}
+
+		$fp = fopen($target_directory, 'x');
+		$written_byte = fwrite($fp, $body);
+		fclose($fp);
+
+		// Check if saved image has the same size as the source
+		$save_success = false;
+		if($source_image_size == filesize($target_directory) && $source_image_size == $written_byte) {
+			// Check if saved image is valid as an image
+			if(exif_imagetype($target_directory) != false) {
+				$save_success = true;
+			}
+		}
+
+		
+		return $save_success;
 	}
 
 	protected function parseHeaderContentLength($header) {
