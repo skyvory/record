@@ -99,21 +99,25 @@ trait ExtensionPlus
 			$is_image_write_required = true;
 		}
 
-		$fp = fopen($target_directory, 'x');
-		$written_byte = fwrite($fp, $body);
-		fclose($fp);
+		if($is_image_write_required) {
+			$fp = fopen($target_directory, 'w+');
+			$written_byte = fwrite($fp, $body);
+			fclose($fp);
 
-		// Check if saved image has the same size as the source
-		$save_success = false;
-		if($source_image_size == filesize($target_directory) && $source_image_size == $written_byte) {
-			// Check if saved image is valid as an image
-			if(exif_imagetype($target_directory) != false) {
-				$save_success = true;
+			// Check if saved image has the same size as the source
+			$save_success = false;
+			if($source_image_size == filesize($target_directory) && $source_image_size == $written_byte) {
+				// Check if saved image is valid as an image
+				if(exif_imagetype($target_directory) != false) {
+					$save_success = true;
+				}
 			}
+
+			return $save_success;
 		}
 
-		
-		return $save_success;
+		return true;
+
 	}
 
 	protected function parseHeaderContentLength($header) {
