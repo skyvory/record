@@ -34,6 +34,7 @@ use Illuminate\Http\Request;
 		Route::post('/', 'VnController@create');
 		Route::get('/{id}', 'VnController@getVn');
 		Route::post('/removeRelation', 'VnController@removeRelation');
+		Route::post('/refreshCover/{id}', 'VnController@refreshCover');
 	});
 	Route::resource('assessment', 'AssessmentController', ['except' => ['index', 'show', 'create', 'edit']]);
 	Route::group(['prefix' => 'assessment'], function() {

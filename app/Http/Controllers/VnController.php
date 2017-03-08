@@ -443,4 +443,24 @@ class VnController extends Controller
 			}
 		}
 	}
+
+	public function refreshCover($id)
+	{
+		$vn = Vn::find($id);
+
+		$url = $vn->image;
+		$existing_local_filename = $vn->local_image;
+		$local_filename = "";
+		if($url) {
+			$filename = basename($url);
+			$local_filename = $id . "_" . $filename;
+			$save = $this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename);
+			if($save && $local_filename != $existing_local_filename) {
+				$vn->local_image = $local_filename;
+				$vn->save();
+			}
+		}
+
+		return response()->json(["status" => "success"]);
+	}
 }
