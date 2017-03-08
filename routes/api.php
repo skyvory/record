@@ -45,7 +45,10 @@ use Illuminate\Http\Request;
 	Route::group(['prefix' => 'character'], function() {
 		Route::get('/', 'CharacterController@getCharacters');
 	});
-	Route::resource('developer', 'DeveloperController', ['except' => ['create', 'edit']]);
+	Route::resource('developer', 'DeveloperController', ['except' => ['create', 'edit', 'store']]);
+	Route::group(['prefix' => 'developer'], function() {
+		Route::post('/', 'DeveloperController@create');
+	});
 	Route::resource('lineament', 'LineamentController', ['except' => ['create', 'edit']]);
 	Route::resource('note', 'NoteController', ['except' => ['create', 'edit']]);
 	Route::resource('stock', 'StockController', ['except' => ['create', 'edit']]);

@@ -37,14 +37,24 @@ class DeveloperController extends Controller
 		return response()->json(['data' => $developer]);
 	}
 
-	/**
-	 * Show the form for creating a new resource.
+	/** DEPRECATED!
+	 * Store a newly created resource in storage.
 	 *
+	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function create()
+	public function store(Request $request)
 	{
-		//
+		$developer = new Developer();
+		$developer->name_en = $request->input('name_en');
+		$developer->name_jp = $request->input('name_jp');
+		if(Gate::denies('store-developer', $developer)) {
+			abort(403);
+		}
+		$exec = $developer->save();
+		if($exec) {
+			return response()->json($developer);
+		}
 	}
 
 	/**
@@ -53,7 +63,7 @@ class DeveloperController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request)
+	public function create(Request $request)
 	{
 		$developer = new Developer();
 		$developer->name_en = $request->input('name_en');
