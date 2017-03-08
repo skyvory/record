@@ -65,6 +65,10 @@ class DeveloperController extends Controller
 	 */
 	public function create(Request $request)
 	{
+		$this->validate($request, [
+			'name_jp' => 'required|min:1'
+		]);
+
 		$developer = new Developer();
 		$developer->name_en = $request->input('name_en');
 		$developer->name_jp = $request->input('name_jp');
