@@ -27,13 +27,13 @@ class DeveloperController extends Controller
 	// developer search parameter find only exact string
 	public function index(Request $request)
 	{
-		if($request->input('name_en')) {
-			$developer = Developer::where('name_en', $request->input('name_en'))->first();
+		if($request->input('original')) {
+			$developer = Developer::where('original', $request->input('original'))->first();
 			return response()->json($developer);
 		}
 		// $developer = Developer::orderBy('name_en')->paginate(1000);
 		// return response()->json($developer);
-		$developer = Developer::orderBy('name_en')->get();
+		$developer = Developer::orderBy('original')->get();
 		return response()->json(['data' => $developer]);
 	}
 
@@ -46,8 +46,9 @@ class DeveloperController extends Controller
 	public function store(Request $request)
 	{
 		$developer = new Developer();
-		$developer->name_en = $request->input('name_en');
-		$developer->name_jp = $request->input('name_jp');
+		$developer->original = $request->input('original');
+		$developer->furi = $request->input('furi');
+		$developer->romaji = $request->input('romaji');
 		if(Gate::denies('store-developer', $developer)) {
 			abort(403);
 		}
@@ -66,12 +67,13 @@ class DeveloperController extends Controller
 	public function create(Request $request)
 	{
 		$this->validate($request, [
-			'name_jp' => 'required|min:1'
+			'original' => 'required|min:1'
 		]);
 
 		$developer = new Developer();
-		$developer->name_en = $request->input('name_en');
-		$developer->name_jp = $request->input('name_jp');
+		$developer->original = $request->input('original');
+		$developer->furi = $request->input('furi');
+		$developer->romaji = $request->input('romaji');
 		if(Gate::denies('store-developer', $developer)) {
 			abort(403);
 		}
@@ -95,7 +97,7 @@ class DeveloperController extends Controller
 		}
 	}
 
-	/**
+	/** DEPRECATED!
 	 * Show the form for editing the specified resource.
 	 *
 	 * @param  int  $id
@@ -119,8 +121,9 @@ class DeveloperController extends Controller
 		if(Gate::denies('update-developer', $developer)) {
 			abort(403);
 		}
-		$developer->name_en = $request->input('name_en');
-		$developer->name_jp = $request->input('name_jp');
+		$developer->original = $request->input('original');
+		$developer->furi = $request->input('furi');
+		$developer->romaji = $request->input('romaji');
 		$exec = $developer->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);
