@@ -45,7 +45,7 @@ class VnController extends Controller
 						$query->orwhere('assessments.user_id', null);
 					})
 					->where(function($query) use ($q) {
-						$query->where('title_en', 'like', '%' . $q . '%')->orwhere('title_jp', 'like', '%' . $q . '%');
+						$query->where('title_original', 'like', '%' . $q . '%')->orwhere('title_romaji', 'like', '%' . $q . '%');
 					})
 					->orderBy('created_at', 'desc')->paginate($limit);
 			
@@ -75,8 +75,8 @@ class VnController extends Controller
 		if($search_query) {
 			foreach($search_query as $q) {
 				$vns = $vns->where(function($query) use ($q) {
-					$query->where('title_en', 'like', '%' . $q . '%')
-					->orwhere('title_jp', 'like', '%' . $q . '%');
+					$query->where('title_original', 'like', '%' . $q . '%')
+					->orwhere('title_romaji', 'like', '%' . $q . '%');
 				});
 			}
 		}
@@ -101,8 +101,8 @@ class VnController extends Controller
 
 		if($allow === true) {
 			$vn = new Vn();
-			$vn->title_en = $request->input('title_en');
-			$vn->title_jp = $request->input('title_jp');
+			$vn->title_original = $request->input('title_original');
+			$vn->title_romaji = $request->input('title_romaji');
 			$vn->alias = $request->input('alias');
 			$vn->hashtag = $request->input('hashtag');
 			$vn->developer_id = $request->input('developer_id');
@@ -224,8 +224,8 @@ class VnController extends Controller
 
 		if($allow == true) {
 			$vn = new Vn();
-			$vn->title_en = $request->input('title_en');
-			$vn->title_jp = $request->input('title_jp');
+			$vn->title_original = $request->input('title_original');
+			$vn->title_romaji = $request->input('title_romaji');
 			$vn->hashtag = $request->input('hashtag');
 			$vn->developer_id = $request->input('developer_id');
 			$vn->date_release = $request->input('date_release');
@@ -270,8 +270,8 @@ class VnController extends Controller
 				$response = [
 					// 'vn' => [
 						'id' => $id,
-						'title_en' => $vn->title_en,
-						'title_jp' => $vn->title_jp,
+						'title_original' => $vn->title_original,
+						'title_romaji' => $vn->title_romaji,
 						'hashtag' => $vn->hashtag,
 						'developer_id' => $vn->developer_id,
 						'date_release' => $vn->date_release,
@@ -315,8 +315,8 @@ class VnController extends Controller
 
 				$vn_simplified = [
 					'id' => $id,
-					'title_en' => $vn->title_en,
-					'title_jp' => $vn->title_jp,
+					'title_original' => $vn->title_original,
+					'title_romaji' => $vn->title_romaji,
 					'alias' => $vn->alias,
 					'hashtag' => $vn->hashtag,
 					'developer_id' => $vn->developer_id,
@@ -382,13 +382,13 @@ class VnController extends Controller
 				}
 			}
 
-			if($request->has('title_en')) {
-				$title_en = $request->input('title_en');
-				$vn->title_en = $title_en;
+			if($request->has('title_original')) {
+				$title_original = $request->input('title_original');
+				$vn->title_original = $title_original;
 			}
-			if($request->has('title_jp')) {
-				$title_jp = $request->input('title_jp');
-				$vn->title_jp = $title_jp;
+			if($request->has('title_romaji')) {
+				$title_romaji = $request->input('title_romaji');
+				$vn->title_romaji = $title_romaji;
 			}
 			if($request->has('alias')) {
 				$alias = $request->input('alias');

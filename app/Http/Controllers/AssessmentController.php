@@ -56,7 +56,7 @@ class AssessmentController extends Controller
 		{
 			$join->on('vn.id', '=', 'assessments.vn_id');
 		})
-		->select('vn.title_en', 'vn.title_jp', 'vn.hashtag', 'vn.developer_id', 'vn.date_release', 'vn.image', 'vn.local_image', 'vn.vndb_vn_id',
+		->select('vn.title_original', 'vn.title_romaji', 'vn.hashtag', 'vn.developer_id', 'vn.date_release', 'vn.image', 'vn.local_image', 'vn.vndb_vn_id',
 			'assessments.*')
 		->where(function($query) use ($user) {
 			$query->where('assessments.user_id', $user->id);
@@ -70,8 +70,8 @@ class AssessmentController extends Controller
 		if($search_query) {
 			foreach ($search_query as $q) {
 				$assessments = $assessments->where(function($query) use ($q) {
-					$query->where('title_en', 'like', '%' . $q . '%')
-					->orwhere('title_jp', 'like', '%' . $q . '%')
+					$query->where('title_original', 'like', '%' . $q . '%')
+					->orwhere('title_romaji', 'like', '%' . $q . '%')
 					;
 				});
 			}
