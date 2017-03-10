@@ -21,21 +21,12 @@ class AssessmentController extends Controller
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
 	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
-	{
-		$user = JWTAuth::parseToken()->authenticate();
-		$assessment = Assessment::where('user_id', $user->id)->orderBy('date_start', 'desc')->paginate(10);
-		if(Gate::denies('index-assessment', $assessment)) {
-			abort(403);
-		}
-		return response()->json($assessment);
-	}
-
 	public function getAssessments(Request $request)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
@@ -86,24 +77,13 @@ class AssessmentController extends Controller
 		return response()->json($assessments);
 	}
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
-	{
-		//
-	}
-
 	/**
 	 * Store a newly created resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request)
+	public function create(Request $request)
 	{
 		$allowed_node = array('unknown', 'vn', 'h', 'hrpg', 'rpg');
 		if(!in_array($request->input('node'), $allowed_node)) {
@@ -151,38 +131,16 @@ class AssessmentController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
-	{
-		$user = JWTAuth::parseToken()->authenticate();
-		$assessment = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('assessments.*', 'vn.vndb_vn_id')->where('user_id', $user->id)->where('vn_id', $id)->first();
-		if(Gate::denies('show-assessment', $assessment)) {
-			abort(403);
-		}
-		if($assessment) {
-			return response()->json($assessment);
-		}
-		else {
-			return response()->json($assessment);
-		}
-	}
-
 	public function getOneAssessment($id)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
 		$assessment = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('assessments.*', 'vn.vndb_vn_id')->where('user_id', $user->id)->where('assessments.id', $id)->first();
 
-		return response()->json($assessment);
-	}
+		// if(Gate::denies('show-assessment', $assessment)) {
+		// 	abort(403);
+		// }
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		//
+		return response()->json($assessment);
 	}
 
 	/**
@@ -271,7 +229,7 @@ class AssessmentController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function delete($id)
 	{
 		$assessment = Assessment::find($id);
 		if(Gate::denies('delete-assessment', $assessment)) {

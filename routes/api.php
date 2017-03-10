@@ -28,7 +28,7 @@ use Illuminate\Http\Request;
 	// resource utilize default handle of action provided by resource controller
 	// resource routing
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit']]);
-	// Route::resource('vn', 'VnController', ['except' => ['index', 'show', 'store', 'edit', 'update', 'destroy']]);
+	
 	Route::group(['prefix' => 'vn'], function() {
 		Route::get('/', 'VnController@getVns');
 		Route::post('/', 'VnController@create');
@@ -38,10 +38,13 @@ use Illuminate\Http\Request;
 		Route::put('/{id}', 'VnController@update');
 		Route::delete('/{id}', 'VnController@delete');
 	});
-	Route::resource('assessment', 'AssessmentController', ['except' => ['index', 'show', 'create', 'edit']]);
+
 	Route::group(['prefix' => 'assessment'], function() {
 		Route::get('/', 'AssessmentController@getAssessments');
 		Route::get('/{id}', 'AssessmentController@getOneAssessment');
+		Route::post('/', 'AssessmentController@create');
+		Route::put('/{id}', 'AssessmentController@update');
+		Route::delete('/{id}', 'AssessmentController@delete');
 	});
 	Route::resource('character', 'CharacterController', ['except' => ['index', 'create', 'edit']]);
 	Route::group(['prefix' => 'character'], function() {
