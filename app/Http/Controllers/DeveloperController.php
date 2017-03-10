@@ -18,6 +18,7 @@ class DeveloperController extends Controller
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
 	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -25,7 +26,7 @@ class DeveloperController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 	// developer search parameter find only exact string
-	public function index(Request $request)
+	public function getDevelopers(Request $request)
 	{
 		if($request->input('original')) {
 			$developer = Developer::where('original', $request->input('original'))->first();
@@ -35,27 +36,6 @@ class DeveloperController extends Controller
 		// return response()->json($developer);
 		$developer = Developer::orderBy('original')->get();
 		return response()->json(['data' => $developer]);
-	}
-
-	/** DEPRECATED!
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store(Request $request)
-	{
-		$developer = new Developer();
-		$developer->original = $request->input('original');
-		$developer->furi = $request->input('furi');
-		$developer->romaji = $request->input('romaji');
-		if(Gate::denies('store-developer', $developer)) {
-			abort(403);
-		}
-		$exec = $developer->save();
-		if($exec) {
-			return response()->json($developer);
-		}
 	}
 
 	/**
@@ -89,23 +69,12 @@ class DeveloperController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
+	public function getDeveloper($id)
 	{
 		$developer = Developer::find($id);
 		if($developer) {
 			return response()->json($developer);
 		}
-	}
-
-	/** DEPRECATED!
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		//
 	}
 
 	/**
@@ -136,7 +105,7 @@ class DeveloperController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function delete($id)
 	{
 		$developer = developer::find($id);
 		if(Gate::denies('delete-developer', $developer)) {
@@ -148,7 +117,4 @@ class DeveloperController extends Controller
 		}
 	}
 
-	public function search(Request $request) {
-
-	}
 }

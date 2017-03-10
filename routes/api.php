@@ -55,9 +55,12 @@ use Illuminate\Http\Request;
 		Route::delete('/{id}', 'CharacterController@delete');
 	});
 
-	Route::resource('developer', 'DeveloperController', ['except' => ['create', 'edit', 'store']]);
 	Route::group(['prefix' => 'developer'], function() {
 		Route::post('/', 'DeveloperController@create');
+		Route::get('/', 'DeveloperController@getDevelopers');
+		Route::get('/{id}', 'DeveloperController@getDeveloper');
+		Route::put('/{id}', 'DeveloperController@update');
+		Route::delete('/{id}', 'DeveloperController@delete');
 	});
 	Route::resource('lineament', 'LineamentController', ['except' => ['create', 'edit']]);
 	Route::resource('note', 'NoteController', ['except' => ['create', 'edit']]);
