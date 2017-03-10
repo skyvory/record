@@ -39,7 +39,7 @@ class CharacterController extends Controller
 			return response()->json(['data' => $character]);
 		}
 		else {
-			$character = Character::orderBy('yobikata')->paginate(10);
+			$character = Character::orderBy('name_furigana')->paginate(10);
 			return response()->json($character);
 		}
 
@@ -64,7 +64,7 @@ class CharacterController extends Controller
 			return response()->json(['data' => $character]);
 		}
 		else {
-			$character = Character::orderBy('yobikata')->paginate(10);
+			$character = Character::orderBy('name_furigana')->paginate(10);
 			return response()->json($character);
 		}
 	}
@@ -89,9 +89,9 @@ class CharacterController extends Controller
 	{
 		$character = new Character();
 		$character->vn_id = $request->input('vn_id');
-		$character->kanji = $request->input('kanji');
-		$character->betsumyou = $request->input('betsumyou');
-		$character->yobikata = $request->input('yobikata');
+		$character->name_original = $request->input('name_original');
+		$character->name_betsumyou = $request->input('name_betsumyou');
+		$character->name_furigana = $request->input('name_furigana');
 		$character->birthmonth = !empty(trim($request->input('birthmonth'))) ? $request->input('birthmonth') : null;
 		$character->birthday = !empty(trim($request->input('birthday'))) ? $request->input('birthday') : null;
 		$character->age = !empty(trim($request->input('age'))) ? $request->input('age') : null;
@@ -186,9 +186,9 @@ class CharacterController extends Controller
 		}
 
 		$character->vn_id = $request->input('vn_id');
-		$character->kanji = $request->input('kanji');
-		$character->betsumyou = $request->input('betsumyou');
-		$character->yobikata = $request->input('yobikata');
+		$character->name_original = $request->input('name_original');
+		$character->name_betsumyou = $request->input('name_betsumyou');
+		$character->name_furigana = $request->input('name_furigana');
 		$character->birthmonth = !empty(trim($request->input('birthmonth'))) ? $request->input('birthmonth') : null;
 		$character->birthday = !empty(trim($request->input('birthday'))) ? $request->input('birthday') : null;
 		$character->age = !empty(trim($request->input('age'))) ? $request->input('age') : null;
