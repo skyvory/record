@@ -24,28 +24,13 @@ class CharacterController extends Controller
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
 	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Request $request)
-	{
-		// $user = JWTAuth::parseToken()->authenticate();
-		$vn_id = $request->input('vn_id');
-		if($vn_id != null) {
-			$character = Character::leftJoin('lineaments', 'lineaments.character_id', '=', 'characters.id')->select('characters.*', 'lineaments.note', 'lineaments.mark', 'lineaments.id as lineament_id')->where('vn_id', $vn_id)->orderBy('characters.id')->get();
-			return response()->json(['data' => $character]);
-		}
-		else {
-			$character = Character::orderBy('name_furigana')->paginate(10);
-			return response()->json($character);
-		}
-
-
-	}
-
 	public function getCharacters(Request $request)
 	{
 		$vn_id = $request->input('vn_id');
@@ -70,22 +55,12 @@ class CharacterController extends Controller
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
 	 * Store a newly created resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request)
+	public function create(Request $request)
 	{
 		$character = new Character();
 		$character->vn_id = $request->input('vn_id');
@@ -139,24 +114,13 @@ class CharacterController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
+	public function getCharacter($id)
 	{
 		// $character = JWTAuth::parseToken()->authenticate();
 		$character = Character::find($id);
 		if($character) {
 			return response()->json($character);
 		}
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		//
 	}
 
 	/**
@@ -214,7 +178,7 @@ class CharacterController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function delete($id)
 	{
 		$character = Character::find($id);
 		if(Gate::denies('delete-character', $character)) {
