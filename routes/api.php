@@ -62,7 +62,15 @@ use Illuminate\Http\Request;
 		Route::put('/{id}', 'DeveloperController@update');
 		Route::delete('/{id}', 'DeveloperController@delete');
 	});
-	Route::resource('lineament', 'LineamentController', ['except' => ['create', 'edit']]);
+
+	Route::group(['prefix' => 'lineament'], function() {
+		Route::get('/', 'LineamentController@getLineaments');
+		Route::post('/', 'LineamentController@create');
+		Route::get('/{id}', 'LineamentController@getLineament');
+		Route::put('/{id}', 'LineamentController@update');
+		Route::delete('/{id}', 'LineamentController@delete');
+	});
+
 	Route::resource('note', 'NoteController', ['except' => ['create', 'edit']]);
 	Route::resource('stock', 'StockController', ['except' => ['create', 'edit']]);
 

@@ -18,13 +18,14 @@ class LineamentController extends Controller
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
 	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Request $request)
+	public function getLineaments(Request $request)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
 		$vn_id = $request->input('vn_id');
@@ -49,22 +50,12 @@ class LineamentController extends Controller
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
 	 * Store a newly created resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request)
+	public function create(Request $request)
 	{
 		$check = Lineament::where('user_id', $request->user()->id)->where('character_id', $request->input('character_id'))->first();
 		if($check) {
@@ -90,7 +81,7 @@ class LineamentController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
+	public function getLineament($id)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
 		$lineament = Lineament::where('user_id', $user->id)->find($id);
@@ -101,17 +92,6 @@ class LineamentController extends Controller
 		if($lineament) {
 			return response()->json($lineament);
 		}
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		//
 	}
 
 	/**
@@ -145,7 +125,7 @@ class LineamentController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function delete($id)
 	{
 		$lineament = Lineament::find($id);
 		if(Gate::denies('delete-lineament', $lineament)) {
