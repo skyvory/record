@@ -25,43 +25,6 @@ class VnController extends Controller
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
 	}
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index(Request $request)
-	{
-		$title = "vN List";
-		$user = JWTAuth::parseToken()->authenticate();
-		if($request->has('filter')) {
-			$limit = $request->input('limit') ? $request->input('limit') : 10;
-			$q = $request->has('filter') ? $request->input('filter') : '';
-			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')
-					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_comedy', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
-					->where(function($query) use ($user) {
-						$query->where('assessments.user_id', $user->id);
-						$query->orwhere('assessments.user_id', null);
-					})
-					->where(function($query) use ($q) {
-						$query->where('title_original', 'like', '%' . $q . '%')->orwhere('title_romaji', 'like', '%' . $q . '%');
-					})
-					->orderBy('created_at', 'desc')->paginate($limit);
-			
-		}
-		else {
-			$limit = $request->input('limit') ? $request->input('limit') : 10;
-			$vn = Vn::leftJoin('assessments', 'assessments.vn_id', '=', 'vn.id')
-					->select('vn.*', 'assessments.date_start', 'assessments.date_end', 'assessments.node', 'assessments.score_story', 'assessments.score_naki', 'assessments.score_nuki', 'assessments.score_comedy', 'assessments.score_graphic', 'assessments.score_all', 'assessments.status')
-					->where('assessments.user_id', $user->id)
-					->orwhere('assessments.user_id', null)
-					->orderBy('created_at', 'desc')
-					->paginate($limit);
-		}
-		// $vn = Vn::all();
-		return $vn->toJson();
-	}
 
 	function getVns(Request $request)
 	{
@@ -208,98 +171,11 @@ class VnController extends Controller
 	}
 
 	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store(Request $request)
-	{
-		if($request->user()->isCommon()) {
-			$allow = true;
-		}
-		else {
-			return "xxx";
-		}
-
-		if($allow == true) {
-			$vn = new Vn();
-			$vn->title_original = $request->input('title_original');
-			$vn->title_romaji = $request->input('title_romaji');
-			$vn->hashtag = $request->input('hashtag');
-			$vn->developer_id = $request->input('developer_id');
-			$vn->date_release = $request->input('date_release');
-			$vn->image = $request->input('image');
-			$vn->vndb_vn_id = $request->input('vndb_vn_id');
-			$exec = $vn->save();
-			if($exec) {
-				// save remote image to local
-				$url = $request->input('image');
-				$local_filename = null;
-				if($url) {
-					$filename = basename($url);
-					$local_filename = $vn->id . "_" . $filename;
-					// using php copy function
-					// copy($url, 'reallocation/' . $filename);
-					// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
-					// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
-					if($this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename)) {
-						// save local filename to database
-						$vn->local_image = $local_filename;
-						$vn->save();
-					}
-				}
-
-				return response()->json(["status" => "success"]);
-			}
-		}
-	}
-
-	/**
-	 * Display the specified resource.
+	 * Retrieve the specified resource.
 	 *
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
-	{
-		try {
-			$vn = Vn::find($id);
-			if($vn) {
-				$status_code = 200;
-				$response = [
-					// 'vn' => [
-						'id' => $id,
-						'title_original' => $vn->title_original,
-						'title_romaji' => $vn->title_romaji,
-						'hashtag' => $vn->hashtag,
-						'developer_id' => $vn->developer_id,
-						'date_release' => $vn->date_release,
-						'created_at' => $vn->created_at,
-						'updated_at' => $vn->updated_at,
-						'image' => $vn->image,
-						'vndb_vn_id' => $vn->vndb_vn_id,
-					// ]
-				];
-			}
-			else {
-				$status_code = 200;
-				$response = [
-					'status' => "vn does not exist",
-				];
-			}
-		}
-		catch(Exception $e) {
-			$response = [
-				"error" => "what?"
-			];
-			$status_code = 404;
-		}
-		finally {
-			return response()->json($response, $status_code);
-		}
-	}
-
 	public function getVn($id)
 	{
 		try {
@@ -341,17 +217,6 @@ class VnController extends Controller
 				);
 			return response()->json($compact);
 		}
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		// not used as of restful purpose
 	}
 
 	/**
@@ -427,7 +292,7 @@ class VnController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy(Request $request, $id)
+	public function delete(Request $request, $id)
 	{
 		if($request->user()->isCommon()) {
 			$allow = true;
