@@ -16,9 +16,10 @@ class CreateImagesTable extends Migration
 		Schema::create('images',function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('vn_id')->unsigned();
-			$table->string('local_name');
-			$table->string('image_url')->nullable();
-			$table->smallInteger('screen')->nullable()->comment('1:title, 2:gameplay, 3:config, 4:save/load, 5:omake');
+			$table->string('original_filename');
+			$table->string('local_filename');
+			$table->string('alternative_image_url')->nullable();
+			$table->smallInteger('screen_category')->nullable()->comment('1:title, 2:gameplay, 3:config, 4:save/load, 5:omake');
 			$table->string('description', 600)->nullable();
 			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('updated_at')->useCurrent();
