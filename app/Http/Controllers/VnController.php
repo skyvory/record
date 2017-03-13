@@ -343,14 +343,31 @@ class VnController extends Controller
 		if($request->hasFile('screenshot')) {
 			if($request->file('screenshot')->isvalid()) {
 				$file = $request->file('screenshot');
-
 				$original_filename = $file->getClientOriginalName();
+
 				if(PHP_OS !== "WINNT") {
 					$file->storeAs('screen', $vn_id . '_' . $original_filename);
 				}
 
 				$hashed_filename = $file->hashName();
 				$local_filename = $vn_id . '_' . $hashed_filename;
+
+				// Check if image already exist
+				if(file_exists(public_path() . '/reallocation/screenshot/' . $local_filename)) {
+					// Check if database has the record and write if not
+					$is_image_exist = Screen::where('local_filename', $local_filename)->where('screen_category', $screen_category)->first();
+					if(!$is_image_exist) {
+						$image = new Screen();
+						$image->vn_id = $vn_id;
+						$image->original_filename = $original_filename;
+						$image->local_filename = $local_filename;
+						$image->screen_category = $screen_category;
+						$image->status = 1;
+						$exec = $image->save();
+						return response()->json(['data' => $image]);
+					}
+					return response()->json(['status' => 'File is already exist']);
+				}
 
 				if(PHP_OS === "WINNT") {
 					$exec_save = $file->move(public_path('\reallocation\screenshot'), $local_filename);
@@ -369,7 +386,7 @@ class VnController extends Controller
 				$exec = $image->save();
 
 				if($exec)
-					return response()->json(['data' => $exec]);
+					return response()->json(['data' => $image]);
 				
 			}
 		}
