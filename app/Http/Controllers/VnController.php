@@ -365,6 +365,7 @@ class VnController extends Controller
 				$image->original_filename = $original_filename;
 				$image->local_filename = $local_filename;
 				$image->screen_category = $screen_category;
+				$image->status = 1;
 				$exec = $image->save();
 
 				if($exec)
