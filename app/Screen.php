@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Image extends Model
+class Screen extends Model
 {
-    protected $table = 'images';
+    protected $table = 'screens';
 }

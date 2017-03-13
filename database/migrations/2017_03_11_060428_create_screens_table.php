@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateImagesTable extends Migration
+class CreateScreensTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -13,7 +13,7 @@ class CreateImagesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('images',function(Blueprint $table) {
+		Schema::create('screens',function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('vn_id')->unsigned();
 			$table->string('original_filename');
@@ -33,6 +33,6 @@ class CreateImagesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('images');
+		Schema::drop('screens');
 	}
 }
