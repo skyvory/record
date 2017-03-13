@@ -330,16 +330,35 @@ class VnController extends Controller
 	}
 
 	public function storeScreenshot(Request $request){
-		// $vn_id = $request->input('vn_id');
-		$vn_id = 0;
+		$this->validate($request, [
+			'vn_id' => 'required|integer|min:1',
+			'screenshot' => 'required|file|min:1'
+		]);
+
+		$vn_id = $request->input('vn_id');
+		// $vn_id = 0;
 
 		if($request->hasFile('screenshot')) {
 			if($request->file('screenshot')->isvalid()) {
 				$file = $request->file('screenshot');
-				$local_name = $vn_id . '_' . $file->getClientOriginalName();
-				$file->storeAs('screen', $local_name);
-				$exec_save = $file->move(public_path('/reallocation/screenshot'), $local_name);
-				return $exec_save;
+
+				$original_filename = $file->getClientOriginalName();
+				if(PHP_OS !== "WINNT") {
+					$file->storeAs('screen', $vn_id . '_' . $original_filename);
+				}
+
+				$hashed_filename = $file->hashName();
+				$local_filename = $vn_id . '_' . $hashed_filename;
+
+				if(PHP_OS === "WINNT") {
+					$exec_save = $file->move(public_path('\reallocation\screenshot'), $local_filename);
+				}
+				else {
+					$exec_save = $file->move(public_path('/reallocation/screenshot'), $local_filename);
+				}
+
+				if($exec_save)
+					return "SUCCESS";
 			}
 		}
 
