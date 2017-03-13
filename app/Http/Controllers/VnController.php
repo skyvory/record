@@ -328,4 +328,20 @@ class VnController extends Controller
 
 		return response()->json(["status" => "success"]);
 	}
+
+	public function storeScreenshot(Request $request){
+		// $vn_id = $request->input('vn_id');
+		$vn_id = 0;
+
+		if($request->hasFile('screenshot')) {
+			if($request->file('screenshot')->isvalid()) {
+				$file = $request->file('screenshot');
+				$local_name = $vn_id . '_' . $file->getClientOriginalName();
+				$file->storeAs('screen', $local_name);
+				$exec_save = $file->move(public_path('/reallocation/screenshot'), $local_name);
+				return $exec_save;
+			}
+		}
+
+	}
 }

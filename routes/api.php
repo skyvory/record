@@ -3,7 +3,7 @@
 // appended header to forcefully enable cors
 header('Access-Control-Allow-Origin:  *');
 header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
-header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization');
+header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization, X-Requested-With, Accept');
 // end of forecefull header append
 
 use Illuminate\Http\Request;
@@ -37,6 +37,8 @@ use Illuminate\Http\Request;
 		Route::post('/refreshCover/{id}', 'VnController@refreshCover');
 		Route::put('/{id}', 'VnController@update');
 		Route::delete('/{id}', 'VnController@delete');
+		Route::post('/screenshot', 'VnController@storeScreenshot');
+		// Route::put('/screenshot', 'VnController@storeScreenshot');
 	});
 
 	Route::group(['prefix' => 'assessment'], function() {
