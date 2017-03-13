@@ -14,6 +14,7 @@ use App\Vn;
 use App\User;
 use App\VnGroup;
 use App\VnGroupRelation;
+use App\Screen;
 use App\Http\Controllers\ExtensionPlus;
 
 use Image;
@@ -331,12 +332,13 @@ class VnController extends Controller
 
 	public function storeScreenshot(Request $request){
 		$this->validate($request, [
-			'vn_id' => 'required|integer|min:1',
+			'vn_id' => 'required|integer|min:1|exists:vn,id',
+			'screen_category' => 'required|integer',
 			'screenshot' => 'required|file|min:1'
 		]);
 
 		$vn_id = $request->input('vn_id');
-		// $vn_id = 0;
+		$screen_category = $request->input('screen_category');
 
 		if($request->hasFile('screenshot')) {
 			if($request->file('screenshot')->isvalid()) {
@@ -357,8 +359,17 @@ class VnController extends Controller
 					$exec_save = $file->move(public_path('/reallocation/screenshot'), $local_filename);
 				}
 
-				if($exec_save)
-					return "SUCCESS";
+				// Write record to database
+				$image = new Screen();
+				$image->vn_id = $vn_id;
+				$image->original_filename = $original_filename;
+				$image->local_filename = $local_filename;
+				$image->screen_category = $screen_category;
+				$exec = $image->save();
+
+				if($exec)
+					return response()->json(['data' => $exec]);
+				
 			}
 		}
 
