@@ -351,6 +351,11 @@ class VnController extends Controller
 			$hashed_filename = $file->hashName();
 			$local_filename = $vn_id . '_' . $hashed_filename;
 
+			// Rename .jpeg to .jpg
+			if($file->extension() == 'jpeg') {
+				$local_filename = substr_replace($local_filename, '', -2, 1);
+			}
+
 			// Check if image already exist
 			if(file_exists(public_path() . '/reallocation/screenshot/' . $local_filename)) {
 				// Check if database has the record and write if not
