@@ -398,4 +398,25 @@ class VnController extends Controller
 		}
 
 	}
+
+	public function getScreenshots($id)
+	{
+		$screenshots = Screen::where('vn_id', $id)->where('status', 1)->get();
+		$data = array();
+		foreach ($screenshots as $shot) {
+			$data[] = array(
+				'id' => $shot['id'],
+				'vn_id' => $shot['vn_id'],
+				'local_filename' => $shot['local_filename'],
+				'alternative_image_url' => $shot['alternative_image_url'],
+				'screen_category' => $shot['screen_category'],
+				'description' => $shot['description'],
+				'status' => $shot['status'],
+				'local_url' => url('/reallocation/screenshot') . '/' . $shot['local_filename']
+			);
+		}
+
+		$conslusion = array('data' => $data);
+		return response()->json($conslusion);
+	}
 }

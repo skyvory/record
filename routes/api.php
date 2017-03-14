@@ -38,7 +38,8 @@ use Illuminate\Http\Request;
 		Route::put('/{id}', 'VnController@update');
 		Route::delete('/{id}', 'VnController@delete');
 		Route::post('/screenshot', 'VnController@storeScreenshot');
-		// Route::put('/screenshot', 'VnController@storeScreenshot');
+		Route::put('/screenshot', 'VnController@storeScreenshot');
+		Route::get('/screenshots/{id}', 'VnController@getScreenshots');
 	});
 
 	Route::group(['prefix' => 'assessment'], function() {
