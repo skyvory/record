@@ -389,6 +389,9 @@ class VnController extends Controller
 			$image->status = 1;
 			$exec = $image->save();
 
+			// Include local URL to returned response
+			$image['local_url'] = url('/reallocation/screenshot') . '/' . $local_filename;
+
 			if($exec)
 				return response()->json(['data' => $image]);
 				
