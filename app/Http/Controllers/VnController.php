@@ -385,7 +385,7 @@ class VnController extends Controller
 			$image->vn_id = $vn_id;
 			$image->original_filename = $original_filename;
 			$image->local_filename = $local_filename;
-			$image->screen_category = $screen_category;
+			$image->screen_category = (int)$screen_category;
 			$image->status = 1;
 			$exec = $image->save();
 
