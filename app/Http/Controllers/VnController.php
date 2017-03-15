@@ -428,6 +428,7 @@ class VnController extends Controller
 		$old_file_path = public_path() . '/reallocation/screenshot/' . $screenshot->local_filename;
 		$new_file_path = storage_path() . '/app/deletion/screenshot/' . $screenshot->local_filename;
 		if(file_exists($old_file_path)) {
+			$this->prepareDirectory(storage_path('app/deletion/screenshot'));
 			$ren = rename($old_file_path, $new_file_path);
 		}
 
@@ -435,5 +436,18 @@ class VnController extends Controller
 		$screenshot->save();
 
 		return response()->json(['status' => 'deleted']);
+	}
+
+	public function prepareDirectory($directory) {
+		try {
+			if(!is_dir($directory)) {
+				mkdir($directory, 0777, true);
+			}
+		}
+		catch(\Exception $e) {
+			throw new \Symfony\Component\HttpKernel\Exception\HttpException('Directory preparation failed!');
+		}
+
+		return true;
 	}
 }
