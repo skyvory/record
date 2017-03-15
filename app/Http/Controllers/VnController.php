@@ -438,7 +438,7 @@ class VnController extends Controller
 		return response()->json(['status' => 'deleted']);
 	}
 
-	public function prepareDirectory($directory) {
+	private function prepareDirectory($directory) {
 		try {
 			if(!is_dir($directory)) {
 				mkdir($directory, 0777, true);
