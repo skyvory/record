@@ -41,6 +41,7 @@ use Illuminate\Http\Request;
 		Route::put('/screenshot', 'VnController@storeScreenshot');
 		Route::get('/screenshots/{id}', 'VnController@getScreenshots');
 		Route::delete('/screenshot/{id}', 'VnController@removeScreenshot');
+		Route::put('/screenshot/{id}', 'VnController@updateScreenshotProperty');
 	});
 
 	Route::group(['prefix' => 'assessment'], function() {

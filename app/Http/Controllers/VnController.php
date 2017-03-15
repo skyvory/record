@@ -438,6 +438,21 @@ class VnController extends Controller
 		return response()->json(['status' => 'deleted']);
 	}
 
+	public function updateScreenshotProperty(Request $request, $id)
+	{
+		$this->validate($request, [
+			'descriiption' => 'string|nullable'
+		]);
+		
+		$screenshot = Screen::find($id);
+		$screenshot->description = $request->input('description');
+		$exec = $screenshot->save();
+
+		if($exec) {
+			return response()->json(['data' => $screenshot]);
+		}
+	}
+
 	private function prepareDirectory($directory) {
 		try {
 			if(!is_dir($directory)) {
