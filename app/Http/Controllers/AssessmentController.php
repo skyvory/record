@@ -218,6 +218,8 @@ class AssessmentController extends Controller
 			abort(403);
 		}
 
+		$this->writeHistory($assessment->id);
+
 		$assessment->record_status = 3;
 		$exec = $assessment->save();
 		if($exec) {
