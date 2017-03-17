@@ -12,6 +12,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Response;
 use Gate;
 use App\Lineament;
+use App\LineamentHistory;
 
 class LineamentController extends Controller
 {
@@ -113,6 +114,14 @@ class LineamentController extends Controller
 		}
 		$lineament->note = $this->decodeInput($request->input('note'));
 		$lineament->mark = $request->input('mark');
+
+		// Write history if any property change detected
+		if($lineament->isDirty()) {
+			if(!$this->writeHistory($lineament->id)) {
+				return response()->json(['status' => 'error', 'errors' => ['someting is wrong with history logging']]);
+			}
+		}
+
 		$exec = $lineament->save();
 		if($exec) {
 			return response()->json(["status" => "success"]);
@@ -131,15 +140,41 @@ class LineamentController extends Controller
 		if(Gate::denies('delete-lineament', $lineament)) {
 			abort(403);
 		}
+
+		if(!$this->writeHistory($lineament->id)) {
+			return response()->json(['status' => 'error', 'errors' => ['someting is wrong with history logging']]);
+		}
+
 		$exec = $lineament->delete();
 		if($exec) {
 			return response()->json(["status" => "success"]);
 		}
 	}
 
-	private function decodeInput($html) {
+	private function decodeInput($html)
+	{
 		$html = html_entity_decode($html);
 		$html = preg_replace('#<br\s*/?>#i', "\n", $html);
 		return $html;
+	}
+
+	private function writeHistory($id)
+	{
+		\DB::beginTransaction();
+		$lineament = Lineament::find($id);
+
+		$history = new LineamentHistory();
+		$history->lineament_id = $lineament->id;
+		$max_revision_sequence = LineamentHistory::select('revision_sequence')->where('lineament_id', $lineament->id)->where('user_id', $lineament->user_id)->lockForUpdate()->max('revision_sequence');
+		$history->revision_sequence = $max_revision_sequence ? $max_revision_sequence + 1 : 1;
+		$history->modified_date = $lineament->updated_at;
+		$history->user_id = $lineament->user_id;
+		$history->character_id = $lineament->character_id;
+		$history->note = $lineament->note;
+		$history->mark = $lineament->mark;
+
+		$exec_history = $history->save();
+		\DB::commit();
+		return $exec_history;
 	}
 }
