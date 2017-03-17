@@ -217,7 +217,9 @@ class AssessmentController extends Controller
 		if(Gate::denies('delete-assessment', $assessment)) {
 			abort(403);
 		}
-		$exec = $assessment->delete();
+
+		$assessment->record_status = 3;
+		$exec = $assessment->save();
 		if($exec) {
 			return response()->json(["status" => "success"]);
 		}

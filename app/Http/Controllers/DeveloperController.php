@@ -112,7 +112,8 @@ class DeveloperController extends Controller
 		if(Gate::denies('delete-developer', $developer)) {
 			abort(403);
 		}
-		$exec = $developer->delete();
+		$developer->record_status = 3;
+		$exec = $developer->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);
 		}

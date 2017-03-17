@@ -186,7 +186,8 @@ class CharacterController extends Controller
 		if(Gate::denies('delete-character', $character)) {
 			abort(403);
 		}
-		$exec = $character->delete();
+		$character->record_status = 3;
+		$exec = $character->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);
 		}
