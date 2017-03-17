@@ -7,10 +7,10 @@ The motives are, used by vndb, deficient and substandard evaluation/voting syste
 This web app serves as prototypical design reference for future development plan which will be detached from central data processing dependence.  
 The loose-coupled back-front separation will be unified thence.
 
-# Prerequisites
+## Prerequisites
 1. Enable `extension=php_fileinfo.dll` in php.ini
 
-# Preparation
+## Preparation
 1. Install [Composer] (https://getcomposer.org/download/)
 2. Run `composer install` in directory consisting composer.json
 
@@ -18,8 +18,8 @@ The loose-coupled back-front separation will be unified thence.
 Whilst no hardcode restriction being applied, there are some conventions used internally. Might purposely break normalization in sake of simplification.
 
 ### Assessment
-#### - Status
-Derived from common point of identification with unnecessary/temporary hassle ommited  
+#### Status
+Derived from common point of identification with unnecessary/temporary hassle omitted  
 1.  finished  
 Mark for completely finished tittle.  
 2.  halted  
@@ -27,20 +27,24 @@ Mark for suspended/stalled title.
 3. dropped  
 Planned to use decomposed to no avail. Common term is used instead.  
 
-#### - Node
+#### Node
 Root base of the title's genre on the lowest level split into 2 division  
 1. VN  
 Targeted for full story-oriented content, preferably with low erotism.  
 2. H  
 Targeted for content with low-quality story and particularly from some extent to higher amount of sexual content.  
+3. RPG
+Role-Playing Game. Self-explanatory.
+4. HRPG
+Role Playing Game-featured gameplay with erotic content as its main selling-point.
 
 ### Character
-#### - Mark
-Favoritism point in letter-grade rank towards stated character  
+#### Mark
+Favoritism point in letter-grade rank towards stated character
 
 
-# Dev Guidelines
-## Response convention
+## Dev Guidelines
+### Response convention
 If possible, always include these properties on every returned JSON response.
 Format:
 response: {
@@ -50,4 +54,9 @@ response: {
 	data: your data to return here
 }
 
-0x04
+### Record status indication
+The status of a row in a table in database which indicate the activity of the recorded data.
+1. Active
+2. Archived
+3. Deleted
+Current table that incorporate record_status column: assessments, assessments_history, vn, characters, developers, screens
