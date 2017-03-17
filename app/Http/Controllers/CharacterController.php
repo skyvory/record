@@ -208,11 +208,12 @@ class CharacterController extends Controller
 
 	private function writeHistory($id)
 	{
+		\DB::beginTransaction();
 		$character = Character::find($id);
 
 		$history = new CharacterHistory();
 		$history->character_id = $character->id;
-		$max_revision_sequence = CharacterHistory::select('revision_sequence')->where('character_id', $character->id)->max('revision_sequence');
+		$max_revision_sequence = CharacterHistory::select('revision_sequence')->where('character_id', $character->id)->lockForUpdate()->max('revision_sequence');
 		$history->revision_sequence = $max_revision_sequence ? $max_revision_sequence + 1 : 1;
 		$history->modified_date = $character->updated_at;
 		$history->vn_id = $character->vn_id;
@@ -235,6 +236,7 @@ class CharacterController extends Controller
 		$history->record_status = $character->record_status;
 
 		$exec_history = $history->save();
+		\DB::commit();
 		return $exec_history;
 	}
 }
