@@ -73,6 +73,7 @@ class VnController extends Controller
 			$vn->date_release = $request->input('date_release');
 			$vn->image = $request->input('image');
 			$vn->vndb_vn_id = $request->input('vndb_vn_id');
+			$vn->game_engine = $request->input('game_engine');
 			$exec = $vn->save();
 			if($exec) {
 				// save remote image to local
@@ -202,6 +203,7 @@ class VnController extends Controller
 					'updated_at' => $vn->updated_at,
 					'image' => $vn->image,
 					'vndb_vn_id' => $vn->vndb_vn_id,
+					'game_engine' -> $vn->game_engine,
 					'relations' => $relations
 				];
 			}
@@ -275,6 +277,9 @@ class VnController extends Controller
 				$vn->date_release = $date_release;
 			}
 			$vn->vndb_vn_id = $request->has('vndb_vn_id') ? $request->input('vndb_vn_id') : null;
+			if($request->has('game_engine')) {
+				$vn->game_engine = $request->input('game_engine');
+			}
 			$exec = $vn->save();
 
 			if($request->has('related_vn_id'))
