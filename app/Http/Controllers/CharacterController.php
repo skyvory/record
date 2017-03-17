@@ -44,6 +44,7 @@ class CharacterController extends Controller
 			})
 			->select('characters.*', 'lineaments.note', 'lineaments.mark', 'lineaments.id as lineament_id')
 			->where('vn_id', $vn_id)
+			->where('record_status', 1)
 			->orderBy('characters.id')
 			->get();
 			return response()->json(['data' => $character]);
@@ -79,6 +80,7 @@ class CharacterController extends Controller
 		$character->image = $request->input('image');
 		$character->description = !empty(trim($request->input('description'))) ? $request->input('description') : null;
 		$character->vndb_character_id = $request->input('vndb_character_id');
+		$character->record_status = 1;
 		if(Gate::denies('store-character', $character)) {
 			abort(403);
 		}
@@ -117,7 +119,7 @@ class CharacterController extends Controller
 	public function getCharacter($id)
 	{
 		// $character = JWTAuth::parseToken()->authenticate();
-		$character = Character::find($id);
+		$character = Character::where('id', $id)->whereIn('record_status', array(1,2))->first();
 		if($character) {
 			return response()->json($character);
 		}

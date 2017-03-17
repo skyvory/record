@@ -34,7 +34,7 @@ class DeveloperController extends Controller
 		}
 		// $developer = Developer::orderBy('name_en')->paginate(1000);
 		// return response()->json($developer);
-		$developer = Developer::orderBy('original')->get();
+		$developer = Developer::orderBy('original')->where('record_status', 1)->get();
 		return response()->json(['data' => $developer]);
 	}
 
@@ -54,6 +54,7 @@ class DeveloperController extends Controller
 		$developer->original = $request->input('original');
 		$developer->furi = $request->input('furi');
 		$developer->romaji = $request->input('romaji');
+		$developer->record_status = 1;
 		if(Gate::denies('store-developer', $developer)) {
 			abort(403);
 		}
@@ -71,7 +72,7 @@ class DeveloperController extends Controller
 	 */
 	public function getDeveloper($id)
 	{
-		$developer = Developer::find($id);
+		$developer = Developer::where('id', $id)->whereIn('record_status', array(1,2))->first();
 		if($developer) {
 			return response()->json($developer);
 		}

@@ -52,6 +52,7 @@ class AssessmentController extends Controller
 		->where(function($query) use ($user) {
 			$query->where('assessments.user_id', $user->id);
 		})
+		->where('assessments.record_status', 1)
 		;
 
 		if($filter_vn_id) {
@@ -115,6 +116,7 @@ class AssessmentController extends Controller
 		$assessment->archive_savedata = $request->input('archive_savedata');
 		$assessment->savable = $savable;
 		$assessment->status = $request->input('status');
+		$assessment->record_status = 1;
 		if(Gate::denies('store-assessment', $assessment)) {
 			abort(403);
 		}
@@ -134,7 +136,7 @@ class AssessmentController extends Controller
 	public function getOneAssessment($id)
 	{
 		$user = JWTAuth::parseToken()->authenticate();
-		$assessment = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('assessments.*', 'vn.vndb_vn_id')->where('user_id', $user->id)->where('assessments.id', $id)->first();
+		$assessment = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('assessments.*', 'vn.vndb_vn_id')->where('user_id', $user->id)->where('assessments.id', $id)->whereIn('assessments.record_status', array(1,2))->first();
 
 		// if(Gate::denies('show-assessment', $assessment)) {
 		// 	abort(403);
