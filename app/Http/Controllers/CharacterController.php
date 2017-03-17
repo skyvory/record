@@ -13,6 +13,7 @@ use Illuminate\Http\Response;
 use Gate;
 use App\User;
 use App\Character;
+use App\CharacterHistory;
 use Image;
 use App\Http\Controllers\ExtensionPlus;
 
@@ -168,6 +169,13 @@ class CharacterController extends Controller
 		$character->local_image = $local_filename;
 		$character->description = !empty(trim($request->input('description'))) ? $request->input('description') : null;
 		$character->vndb_character_id = $request->input('vndb_character_id');
+		
+		// Write history if any property change detected
+		if($character->isDirty()) {
+			if(!$this->writeHistory($character->id)) {
+				return response()->json(['status' => 'error', 'errors' => ['someting is wrong with history logging']]);
+			}
+		}
 		$exec = $character->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);
@@ -187,9 +195,46 @@ class CharacterController extends Controller
 			abort(403);
 		}
 		$character->record_status = 3;
+
+		if(!$this->writeHistory($character->id)) {
+			return response()->json(['status' => 'error', 'errors' => ['someting is wrong with history logging']]);
+		}
+
 		$exec = $character->save();
 		if($exec) {
 			return response()->json(['status' => 'success']);
 		}
+	}
+
+	private function writeHistory($id)
+	{
+		$character = Character::find($id);
+
+		$history = new CharacterHistory();
+		$history->character_id = $character->id;
+		$max_revision_sequence = CharacterHistory::select('revision_sequence')->where('character_id', $character->id)->max('revision_sequence');
+		$history->revision_sequence = $max_revision_sequence ? $max_revision_sequence + 1 : 1;
+		$history->modified_date = $character->updated_at;
+		$history->vn_id = $character->vn_id;
+		$history->name_original = $character->name_original;
+		$history->name_betsumyou = $character->name_betsumyou;
+		$history->name_furigana = $character->name_furigana;
+		$history->birthmonth = $character->birthmonth;
+		$history->birthday = $character->birthday;
+		$history->age = $character->age;
+		$history->height = $character->height;
+		$history->weight = $character->weight;
+		$history->bust = $character->bust;
+		$history->waist = $character->waist;
+		$history->hip = $character->hip;
+		$history->blood_type = $character->blood_type;
+		$history->image = $character->image;
+		$history->local_image = $character->local_image;
+		$history->description = $character->description;
+		$history->vndb_character_id = $character->vndb_character_id;
+		$history->record_status = $character->record_status;
+
+		$exec_history = $history->save();
+		return $exec_history;
 	}
 }
