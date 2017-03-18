@@ -203,7 +203,7 @@ class VnController extends Controller
 					'updated_at' => $vn->updated_at,
 					'image' => $vn->image,
 					'vndb_vn_id' => $vn->vndb_vn_id,
-					'game_engine' -> $vn->game_engine,
+					'game_engine' => $vn->game_engine,
 					'relations' => $relations
 				];
 			}
