@@ -250,36 +250,16 @@ class VnController extends Controller
 				}
 			}
 
-			if($request->has('title_original')) {
-				$title_original = $request->input('title_original');
-				$vn->title_original = $title_original;
-			}
-			if($request->has('title_romaji')) {
-				$title_romaji = $request->input('title_romaji');
-				$vn->title_romaji = $title_romaji;
-			}
-			if($request->has('alias')) {
-				$alias = $request->input('alias');
-				$vn->alias = $alias;
-			}
-			if($request->has('hashtag')) {
-				$hashtag = $request->input('hashtag');
-				$vn->hashtag = $hashtag;
-			}
-			if($request->has('developer_id')) {
-				$developer_id = $request->input('developer_id');
-				$vn->developer_id = $developer_id;
-			}
+			$vn->title_original = $request->has('title_original') ? $request->input('title_original') : null;
+			$vn->title_romaji = $request->has('title_romaji') ? $request->input('title_romaji') : null;
+			$vn->alias = $request->has('alias') ? $request->input('alias') : null;
+			$vn->hashtag = $request->has('hashtag') ? $request->input('hashtag') : null;
+			$vn->developer_id = $request->has('developer_id') ? $request->input('developer_id') : null;
 			$vn->image = $request->has('image') ? $request->input('image') : null;
 			$vn->local_image = $local_filename;
-			if($request->has('date_release')) {
-				$date_release = $request->input('date_release');
-				$vn->date_release = $date_release;
-			}
+			$vn->date_release = $request->has('date_release') ? $request->input('date_release') : null;
 			$vn->vndb_vn_id = $request->has('vndb_vn_id') ? $request->input('vndb_vn_id') : null;
-			if($request->has('game_engine')) {
-				$vn->game_engine = $request->input('game_engine');
-			}
+			$vn->game_engine = $request->has('game_engine') ? $request->input('game_engine') : null;
 			$exec = $vn->save();
 
 			if($request->has('related_vn_id'))
