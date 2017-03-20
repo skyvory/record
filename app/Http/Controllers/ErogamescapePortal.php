@@ -2,38 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use Illuminate\Http\Response;
-
-class ErogamescapePortal extends Controller
+trait ErogamescapePortal
 {
-	protected function getErogeByGameId($egs_game_id) {
-		$egs_game_id = 23994;
-		if($egs_game_id) {
-			$params = array(
-				'game_id' => $egs_game_id
-			);
+	protected function searchEroge($params) {
+		if(sizeof($params)) {
+			if(!isset($params['game_id']) && !isset($params['search_query'])) {
+				return 0;
+			}
 			$query_to_retrieve = $this->parseParamToQuery($params);
 			$html_content = $this->retrievePageContent($query_to_retrieve);
 			$this->writeHtmlToDisk($html_content, storage_path('/app/egs-sql-html-log/'), 'egs_sql_');
 			$data = $this->extractEssenceFromHtml($html_content);
-			return response()->json(['data' => $data]);
+			return $data;
 		}
 	}
-	protected function searchEroge($search_query) {
-		if($search_query) {
-			$params = array(
-				// 'game_id' => $egs_game_id,
-				'search_query' => $search_query
-			);
-			$query_to_retrieve = $this->parseParamToQuery($params);
-			$html_content = $this->retrievePageContent($query_to_retrieve);
-			$this->writeHtmlToDisk($html_content, storage_path('/app/egs-sql-html-log/'), 'egs_sql_');
-			$data = $this->extractEssenceFromHtml($html_content);
-			return response()->json(['data' => $data]);
-		}
-	}
+
 	protected function retrievePageContent($query) {
 		$fields = array(
 			'sql' => $query
@@ -62,6 +45,7 @@ class ErogamescapePortal extends Controller
 
 		return $result;
 	}
+
 	protected function parseParamToQuery($params, $target_table = null) {
 
 		$sql = 'SELECT * FROM ';
@@ -96,6 +80,7 @@ class ErogamescapePortal extends Controller
 		}
 		return $sql;
 	}
+
 	protected function extractEssenceFromHtml($html) {
 		$html = preg_replace('/\s+/S', " ", $html);
 		$essence = array();
