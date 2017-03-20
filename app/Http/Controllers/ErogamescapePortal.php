@@ -21,8 +21,18 @@ class ErogamescapePortal extends Controller
 			return response()->json(['data' => $data]);
 		}
 	}
-	protected function searchEroge($query) {
-		//
+	protected function searchEroge($search_query) {
+		if($search_query) {
+			$params = array(
+				// 'game_id' => $egs_game_id,
+				'search_query' => $search_query
+			);
+			$query_to_retrieve = $this->parseParamToQuery($params);
+			$html_content = $this->retrievePageContent($query_to_retrieve);
+			$this->writeHtmlToDisk($html_content, storage_path('/app/egs-sql-html-log/'), 'egs_sql_');
+			$data = $this->extractEssenceFromHtml($html_content);
+			return response()->json(['data' => $data]);
+		}
 	}
 	protected function retrievePageContent($query) {
 		$fields = array(
@@ -71,8 +81,18 @@ class ErogamescapePortal extends Controller
 			$sql = $sql . 'LEFT JOIN brandlist ON gamelist.brandname = brandlist.id ';
 		}
 
-		if($params['game_id']) {
+		if(isset($params['game_id'])) {
 			$sql = $sql . 'WHERE gamelist.id = \'' . $params['game_id'] . '\' ';
+		}
+		else if(isset($params['search_query'])) {
+			$sql = $sql . "WHERE gamelist.id > '0' AND (gamelist.gamename LIKE '%" . $params['search_query'] . "%' ";
+			$search_keywords = explode(' ', $params['search_query']);
+			foreach ($search_keywords as $word) {
+				$sql = $sql . "OR gamelist.gamename LIKE '%" . $word . "%' ";
+				$sql = $sql . "OR gamelist.furigana LIKE '%" . $word . "%' ";
+				$sql = $sql . "OR brandlist.brandname LIKE '%" . $word . "%' ";
+			}
+			$sql = $sql . ') ';
 		}
 		return $sql;
 	}
@@ -123,7 +143,7 @@ class ErogamescapePortal extends Controller
 			}
 			$sql_result_complete = array_combine($sql_result_key, $sql_result_value);
 		}
-		
+
 		return $sql_result_complete;
 	}
 
