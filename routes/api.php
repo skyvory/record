@@ -87,4 +87,6 @@ use Illuminate\Http\Request;
 		Route::post('/setVote', 'VndbController@setVote');
 		Route::post('/setStatus', 'VndbController@setStatus');
 	});
+
+	Route::get('/portal/search/{search_query}', 'VnController@searchGame');
 // });

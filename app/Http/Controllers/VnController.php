@@ -16,12 +16,15 @@ use App\VnGroup;
 use App\VnGroupRelation;
 use App\Screen;
 use App\Http\Controllers\ExtensionPlus;
+use App\Http\Controllers\ErogamescapePortal;
+use App\VndbClient\Client;
+use App\Http\Controllers\VndbPortal;
 
 use Image;
 
 class VnController extends Controller
 {
-	use ExtensionPlus;
+	use ExtensionPlus, ErogamescapePortal,VndbPortal;
 
 	public function __construct() {
 		$this->middleware('jwt.auth', ['except' => ['authenticate']]);
@@ -449,5 +452,18 @@ class VnController extends Controller
 		}
 
 		return true;
+	}
+
+	public function searchGame($search_query) {
+		$egs_search_result = $this->searchEroge(array('search_query' => $search_query));
+		$auth = null;
+		// $vndb_search_result = $this->searchVn(array('username' => '', 'password' => ''), array('search_query' => $search_query));
+		$compilation = array(
+			'data' => array(
+				'egs' => $egs_search_result,
+				// 'vndb' => $vndb_search_result
+			)
+		);
+		return response()->json($compilation);
 	}
 }
