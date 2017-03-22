@@ -102,6 +102,12 @@ trait ErogamescapePortal
 		$innerhtml_of_queryresultmain = $dom->saveHtml($element_of_queryresultmain);
 		// Parse element of table
 		$element_of_table = $element_of_queryresultmain->getElementsByTagName('tr');
+
+		// If null, return null
+		if($element_of_table->length <= 0) {
+			return null;
+		}
+
 		// Assign each value in th tag into array
 		$element_of_th = $element_of_table[0]->getElementsByTagName('th');
 		foreach ($element_of_th as $th_object) {
