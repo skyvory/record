@@ -88,6 +88,6 @@ use Illuminate\Http\Request;
 		Route::post('/setStatus', 'VndbController@setStatus');
 	});
 
-	Route::get('/portal/search/{search_query}', 'VnController@searchGame');
+	Route::post('/portal/search/{search_query}', 'VnController@searchGame');
 	Route::post('/setting/vndb', 'SettingController@storeVndbAuthHash');
 // });
