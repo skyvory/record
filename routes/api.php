@@ -89,4 +89,5 @@ use Illuminate\Http\Request;
 	});
 
 	Route::get('/portal/search/{search_query}', 'VnController@searchGame');
+	Route::post('/setting/vndb', 'SettingController@storeVndbAuthHash');
 // });
