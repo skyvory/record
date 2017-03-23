@@ -49,7 +49,7 @@ class VndbController extends Controller
 		$vndb_username_hash = $request->input('vndb_username_hash');
 		$vndb_password_hash = $request->input('vndb_password_hash');
 		$auth = app('App\Http\Controllers\SettingController')->retrieveVndbAuth($vndb_username_hash, $vndb_password_hash);
-		
+
 		$client = new Client();
 		$client->connect();
 		$client->login($username = $auth['username'], $password = $auth['password']);
@@ -60,9 +60,13 @@ class VndbController extends Controller
 		return response()->json($res_after);
 	}
 	public function setVote(Request $request) {
+		$vndb_username_hash = $request->input('vndb_username_hash');
+		$vndb_password_hash = $request->input('vndb_password_hash');
+		$auth = app('App\Http\Controllers\SettingController')->retrieveVndbAuth($vndb_username_hash, $vndb_password_hash);
+
 		$client = new Client();
 		$client->connect();
-		$client->login($username = $request->input('username'), $password = $request->input('password'));
+		$client->login($username = $auth['username'], $password = $auth['password']);
 		$vndb_id = $request->input('vndb_id');
 		$vote = $request->input('vote') * 10;
 		$res = $client->sendCommand('set votelist ' . (int)$vndb_id . ' {"vote": ' . (int)$vote . '}');
@@ -70,9 +74,13 @@ class VndbController extends Controller
 		return response()->json($res_after);
 	}
 	public function setStatus(Request $request) {
+		$vndb_username_hash = $request->input('vndb_username_hash');
+		$vndb_password_hash = $request->input('vndb_password_hash');
+		$auth = app('App\Http\Controllers\SettingController')->retrieveVndbAuth($vndb_username_hash, $vndb_password_hash);
+		
 		$client = new Client();
 		$client->connect();
-		$client->login($username = $request->input('username'), $password = $request->input('password'));
+		$client->login($username = $auth['username'], $password = $auth['password']);
 		$vndb_id = $request->input('vndb_id');
 		$vndb_status = null;
 		$vndb_status = $request->input('status') == 'finished' ? 2 : $vndb_status;
