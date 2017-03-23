@@ -34,9 +34,13 @@ class VndbController extends Controller
 		return response()->json($res_after);
 	}
 	public function release(Request $request) {
+		$vndb_username_hash = $request->input('vndb_username_hash');
+		$vndb_password_hash = $request->input('vndb_password_hash');
+		$auth = app('App\Http\Controllers\SettingController')->retrieveVndbAuth($vndb_username_hash, $vndb_password_hash);
+		
 		$client = new Client();
 		$client->connect();
-		$client->login($username = $request->input('username'), $password = $request->input('password'));
+		$client->login($username = $auth['username'], $password = $auth['password']);
 		$res = $client->sendCommand('get release basic,details,vn,producers (vn = ' . (int)$request->input('vndb_id') . ')');
 		$res_after = json_decode(json_encode($res), true);
 		return response()->json($res_after);
