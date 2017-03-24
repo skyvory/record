@@ -77,6 +77,9 @@ class VnController extends Controller
 			$vn->image = $request->input('image');
 			$vn->vndb_vn_id = $request->input('vndb_vn_id');
 			$vn->game_engine = $request->input('game_engine');
+			$vn->homepage = $request->input('homepage');
+			$vn->twitter = $request->input('twitter');
+			$vn->erogamescape_game_id = $request->input('erogamescape_game_id');
 			$exec = $vn->save();
 			if($exec) {
 				// save remote image to local
@@ -207,6 +210,9 @@ class VnController extends Controller
 					'image' => $vn->image,
 					'vndb_vn_id' => $vn->vndb_vn_id,
 					'game_engine' => $vn->game_engine,
+					'homepage' => $vn->homepage,
+					'twitter' => $vn->twitter,
+					'erogamescape_game_id' => $vn->erogamescape_game_id,
 					'relations' => $relations
 				];
 			}
@@ -263,6 +269,9 @@ class VnController extends Controller
 			$vn->date_release = $request->has('date_release') ? $request->input('date_release') : null;
 			$vn->vndb_vn_id = $request->has('vndb_vn_id') ? $request->input('vndb_vn_id') : null;
 			$vn->game_engine = $request->has('game_engine') ? $request->input('game_engine') : null;
+			$vn->homepage = $request->has('homepage') ? $request->input('homepage') : null;
+			$vn->twitter = $request->has('twitter') ? $request->input('twitter') : null;
+			$vn->erogamescape_game_id = $request->has('erogamescape_game_id') ? $request->input('erogamescape_game_id') : null;
 			$exec = $vn->save();
 
 			if($request->has('related_vn_id'))
