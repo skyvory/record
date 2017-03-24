@@ -48,7 +48,10 @@ trait ErogamescapePortal
 
 	protected function parseParamToQuery($params, $target_table = null) {
 
-		$sql = 'SELECT * FROM ';
+		$sql = 'SELECT ';
+		$sql = $sql . 'gamelist.* ';
+		$sql = $sql . ', brandlist.brandname, brandlist.brandfurigana, brandlist.makername, brandlist.makerfurigana, brandlist.url as brandlist_url, brandlist.checked as brandlist_checked, brandlist.kind as brandlist_kind, brandlist.lost as brandlist_lost, brandlist.directlink as brandlist_directlink, brandlist.median as brandlist_median, brandlist.http_response_code as brandlist_http_response, brandlist.twitter as brandlist_twitter, brandlist.twitter_data_widget_id as brandlist_twitter_data_widget_id, brandlist.notes as brandlist_notes, brandlist.erogetrailers as brandlist_erogetrailers ';
+		$sql = $sql . 'FROM ';
 		switch ($target_table) {
 			case 'game':
 				$sql = $sql . 'gamelist ';
