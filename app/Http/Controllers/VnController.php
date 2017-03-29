@@ -80,6 +80,7 @@ class VnController extends Controller
 			$vn->homepage = $request->input('homepage');
 			$vn->twitter = $request->input('twitter');
 			$vn->erogamescape_game_id = $request->input('erogamescape_game_id');
+			$vn->vndb_release_id = $request->input('vndb_release_id');
 			$exec = $vn->save();
 			if($exec) {
 				// save remote image to local
@@ -213,6 +214,7 @@ class VnController extends Controller
 					'homepage' => $vn->homepage,
 					'twitter' => $vn->twitter,
 					'erogamescape_game_id' => $vn->erogamescape_game_id,
+					'vndb_release_id' => $vn->vndb_release_id,
 					'relations' => $relations
 				];
 			}
@@ -272,6 +274,7 @@ class VnController extends Controller
 			$vn->homepage = $request->has('homepage') ? $request->input('homepage') : null;
 			$vn->twitter = $request->has('twitter') ? $request->input('twitter') : null;
 			$vn->erogamescape_game_id = $request->has('erogamescape_game_id') ? $request->input('erogamescape_game_id') : null;
+			$vn->vndb_release_id = $request->has('vndb_release_id') ? $request->input('vndb_release_id') : null;
 			$exec = $vn->save();
 
 			if($request->has('related_vn_id'))
