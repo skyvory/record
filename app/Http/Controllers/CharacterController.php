@@ -246,4 +246,60 @@ class CharacterController extends Controller
 		\DB::commit();
 		return $exec_history;
 	}
+
+	public function storeImage(Request $request){
+		$this->validate($request, [
+			'character_id' => 'required|integer|min:1|exists:characters,id',
+			'image' => 'required|file|min:1'
+		]);
+
+		$character_id = $request->input('character_id');
+
+		if($request->hasFile('image') && $request->file('image')->isvalid()) {
+			$file = $request->file('image');
+			$original_filename = $file->getClientOriginalName();
+
+			if(PHP_OS !== "WINNT") {
+				$file->storeAs('character', $character_id . '_' . $original_filename);
+			}
+
+			$hashed_filename = $file->hashName();
+			$local_filename = $character_id . '_' . $hashed_filename;
+
+			// Rename .jpeg to .jpg
+			if($file->extension() == 'jpeg') {
+				$local_filename = substr_replace($local_filename, '', -2, 1);
+			}
+
+			// Check if image already exist
+			if(file_exists(public_path() . '/reallocation/screenshot/' . $local_filename)) {
+				
+				// Check if database has the record and write if not
+				$character = Character::find($character_id);
+				if($character->local_image !== $local_filename) {
+					$character->local_image = $local_filename;
+					$character->save();
+				}
+				return response()->json(['data' => $character]);
+			}
+
+			if(PHP_OS === "WINNT") {
+				$exec_save = $file->move(public_path('\reallocation\character'), $local_filename);
+			}
+			else {
+				$exec_save = $file->move(public_path('/reallocation/character'), $local_filename);
+			}
+
+			// Write record to database
+			$character = Character::find($character_id);
+			$character->local_image = $local_filename;
+			$exec = $character->save();
+
+			// Include local URL to returned response
+			$character['local_url'] = url('/reallocation/character') . '/' . $local_filename;
+
+			if($exec)
+				return response()->json(['data' => $character]);
+		}
+	}
 }

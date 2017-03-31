@@ -58,6 +58,7 @@ use Illuminate\Http\Request;
 		Route::get('/{id}', 'CharacterController@getCharacter');
 		Route::put('/{id}', 'CharacterController@update');
 		Route::delete('/{id}', 'CharacterController@delete');
+		Route::post('/store-image', 'CharacterController@storeImage');
 	});
 
 	Route::group(['prefix' => 'developer'], function() {
