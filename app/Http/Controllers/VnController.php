@@ -302,7 +302,8 @@ class VnController extends Controller
 		if($allow == true) {
 			$vn = Vn::find($id);
 			if($vn) {
-				$exec = $vn->delete();
+				$vn->record_status = 3;
+				$exec = $vn->save();
 				if($exec) {
 					return response()->json(["status" => "success"]);
 				}
