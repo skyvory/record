@@ -48,7 +48,14 @@ class CharacterController extends Controller
 			->where('record_status', 1)
 			->orderBy('characters.id')
 			->get();
-			return response()->json(['data' => $character]);
+
+			$data = array();
+			foreach ($character as $chara) {
+				$chara['local_url'] = url('/reallocation/character') .'/' . $chara['local_image'];
+				$data[] = $chara;
+			}
+
+			return response()->json(['data' => $data]);
 		}
 		else {
 			$character = Character::orderBy('name_furigana')->paginate(10);
