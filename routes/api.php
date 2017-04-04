@@ -23,11 +23,13 @@ use Illuminate\Http\Request;
 	// user authentication mean
 	Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
 	Route::post('authenticate', 'AuthenticateController@authenticate');
-	// return authenticated user details
-	Route::get('who', 'AuthenticateController@who');
 	// resource utilize default handle of action provided by resource controller
 	// resource routing
 	Route::resource('user', 'UserController', ['except' => ['create', 'edit']]);
+
+	Route::group(['prefix' => 'authentication'], function() {
+		Route::get('/validity', 'AuthenticateController@validityCheck');
+	});
 
 	Route::group(['prefix' => 'vn'], function() {
 		Route::get('/', 'VnController@getVns');
