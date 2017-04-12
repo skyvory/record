@@ -119,8 +119,14 @@ class AuthenticateController extends Controller
 			return response()->json(['error' => 'could_not_create_token'], 500);
 		}
 
+		$user = JWTAuth::authenticate($token);
+		$data = array(
+			'user' => $user,
+			'token' => $token
+			);
+
 		// if no errors are encountered we can return a JWT
-		return response()->json(compact('token'));
+		return response()->json($data);
 	}
 	public function validityCheck() {
 		// return "nothing to do here";
