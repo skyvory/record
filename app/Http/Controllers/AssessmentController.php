@@ -32,9 +32,12 @@ class AssessmentController extends Controller
 		$user = JWTAuth::parseToken()->authenticate();
 		$per_page = $request->input('limit') ? $request->input('limit') : 10;
 		$current_page = $request->has('page') ? $request->input('page') : 1;
-		$search_query = $request->has('filter') ? $request->input('filter') : null;
+		$search_query = $request->has('search_filter') ? $request->input('search_filter') : null;
 		$search_query = explode(" ", $search_query);
 		$filter_vn_id = $request->has('vn_id') ? $request->input('vn_id') : null;
+		$filter_status = $request->has('status_filter') ? $request->input('status_filter') : null;
+		$filter_node = $request->has('node_filter') ? $request->input('node_filter') : null;
+		$filter_period = $request->has('period_filter') ? $request->input('period_filter') : null;
 
 		if($current_page) {
 			// set current page programatically
@@ -59,6 +62,67 @@ class AssessmentController extends Controller
 			$assessments = $assessments->where('vn_id', $filter_vn_id);
 		}
 
+		if($filter_status) {
+			switch ($filter_status) {
+				case 'ongoing':
+					$assessments = $assessments->whereNotIn('status', ['finished', 'halted', 'dropped']);
+					break;
+				case 'halted':
+					$assessments = $assessments->where('status', 'halted');
+					break;
+				case 'finished':
+					$assessments = $assessments->where('status', 'finished');
+					break;
+				case 'dropped':
+					$assessments = $assessments->where('status', 'dropped');
+					break;
+				default:
+					break;
+			}
+		}
+
+		if($filter_node) {
+			switch($filter_node) {
+				case 'vn':
+					$assessments = $assessments->where('node', 'vn');
+					break;
+				case 'h':
+					$assessments = $assessments->where('node', 'h');
+					break;
+				case 'rpg':
+					$assessments = $assessments->where('node', 'rpg');
+					break;
+				case 'hrpg':
+					$assessments = $assessments->where('node', 'hrpg');
+					break;
+				default:
+					break;
+			}
+		}
+
+		if($filter_period && $filter_period != 'all') {
+			switch($filter_period) {
+				case 'month':
+					$date_from = date('Y-m-d 00:00:00', strtotime('first day of this month'));
+					$date_to = date('Y-m-d H:i:s', strtotime('now'));
+				case 'year':
+					$date_from = date('Y-m-d H:i:s', strtotime('first day of January'));
+					$date_to = date('Y-m-d H:i:s', strtotime('now'));
+					break;
+				case 'yesteryear':
+					$date_from = date('Y-m-d H:i:s', strtotime('first day of January last year'));
+					$date_to = date('Y-m-d H:i:s', strtotime('last day of December last year'));
+					break;
+				case 'last6months':
+					$date_from = date('Y-m-d H:i:s', strtotime('-6 months'));
+					$date_to = date('Y-m-d H:i:s', strtotime('now'));
+					break;
+				default:
+					break;
+			}
+			$assessments = $assessments->whereBetween('assessments.created_at', [$date_from, $date_to]);
+		}
+
 		if($search_query) {
 			foreach ($search_query as $q) {
 				$assessments = $assessments->where(function($query) use ($q) {
@@ -72,7 +136,7 @@ class AssessmentController extends Controller
 		$assessments = $assessments->orderBy('assessments.created_at', 'desc')->paginate($per_page);
 
 		if(Gate::denies('index-assessment', $assessments)) {
-			abort(403);
+			// abort(403);
 		}
 
 		return response()->json($assessments);
