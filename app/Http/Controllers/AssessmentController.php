@@ -157,6 +157,11 @@ class AssessmentController extends Controller
 		else {
 			$node = $request->input('node');
 		}
+
+		$this->validate($request, [
+			'status' => 'string|nullable|in:playing,halted,finished,dropped'
+			]);
+
 		$savable = "unknown";
 		if($request->input('savable') == "yes") {
 			$savable = "yes";
@@ -218,6 +223,10 @@ class AssessmentController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
+		$this->validate($request, [
+			'status' => 'string|nullable|in:playing,halted,finished,dropped'
+			]);
+
 		$assessment = Assessment::find($id);
 		if(Gate::denies('update-assessment', $assessment)) {
 			abort(403);
