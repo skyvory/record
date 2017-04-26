@@ -29,6 +29,10 @@ class AssessmentController extends Controller
 	 */
 	public function getAssessments(Request $request)
 	{
+		if(Gate::denies('read-assessment')) {
+			abort(403);
+		}
+
 		$user = JWTAuth::parseToken()->authenticate();
 		$per_page = $request->input('limit') ? $request->input('limit') : 10;
 		$current_page = $request->has('page') ? $request->input('page') : 1;
@@ -135,10 +139,6 @@ class AssessmentController extends Controller
 
 		$assessments = $assessments->orderBy('assessments.created_at', 'desc')->paginate($per_page);
 
-		if(Gate::denies('index-assessment', $assessments)) {
-			// abort(403);
-		}
-
 		return response()->json($assessments);
 	}
 
@@ -150,6 +150,10 @@ class AssessmentController extends Controller
 	 */
 	public function create(Request $request)
 	{
+		if(Gate::denies('create-assessment')) {
+			abort(403);
+		}
+
 		$allowed_node = array('unknown', 'vn', 'h', 'hrpg', 'rpg');
 		if(!in_array($request->input('node'), $allowed_node)) {
 			$node = 'unknown';
@@ -204,12 +208,12 @@ class AssessmentController extends Controller
 	 */
 	public function getOneAssessment($id)
 	{
+		if(Gate::denies('read-assessment')) {
+			abort(403);
+		}
+
 		$user = JWTAuth::parseToken()->authenticate();
 		$assessment = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('assessments.*', 'vn.vndb_vn_id')->where('user_id', $user->id)->where('assessments.id', $id)->whereIn('assessments.record_status', array(1,2))->first();
-
-		// if(Gate::denies('show-assessment', $assessment)) {
-		// 	abort(403);
-		// }
 
 		return response()->json($assessment);
 	}
@@ -228,6 +232,7 @@ class AssessmentController extends Controller
 			]);
 
 		$assessment = Assessment::find($id);
+
 		if(Gate::denies('update-assessment', $assessment)) {
 			abort(403);
 		}
@@ -294,6 +299,7 @@ class AssessmentController extends Controller
 	public function delete($id)
 	{
 		$assessment = Assessment::find($id);
+		
 		if(Gate::denies('delete-assessment', $assessment)) {
 			abort(403);
 		}

@@ -69,29 +69,27 @@ class AuthServiceProvider extends ServiceProvider
 			return in_array($user->role, ['administrator']);
 		});
 
-		// assessment define
-		$gate->define('index-assessment', function($user, $assessment) {
-			return $user->role == "common";
+
+		$gate->define('read-assessment', function($user) {
+			return in_array($user->role, ['administrator', 'common']);
 		});
-		$gate->define('show-assessment', function($user, $assessment) {
-			return $user->role == "common";
-		});
-		$gate->define('store-assessment', function($user, $assessment) {
-			return $user->role == "common";
+		$gate->define('create-assessment', function($user) {
+			return in_array($user->role, ['administrator', 'common']);
 		});
 		$gate->define('update-assessment', function($user, $assessment) {
-			if($user->role == "common" && $user->id == $assessment->user_id) {
+			if(in_array($user->role, ['administrator', 'common']) && $user->id == $assessment->user_id) {
 				return true;
 			}
 			return false;
 		});
 		$gate->define('delete-assessment', function($user, $assessment) {
-			if($user->role == "common" && $user->id == $assessment->user_id) {
+			if(in_array($user->role, ['administrator', 'common']) && $user->id == $assessment->user_id) {
 				return true;
 			}
 			return false;
 		});
-
+		
+		
 		// character define
 		$gate->define('store-character', function($user, $character) {
 			return $user->role == "common";
