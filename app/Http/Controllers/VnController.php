@@ -32,7 +32,6 @@ class VnController extends Controller
 
 	function getVns(Request $request)
 	{
-		$title = "VN List";
 		$user = JWTAuth::parseToken()->authenticate();
 		$per_page = $request->has('limit') ? $request->input('limit') : 10;
 		$search_query = $request->has('filter') ? $request->input('filter') : null;
