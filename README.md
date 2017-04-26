@@ -20,11 +20,13 @@ Whilst no hardcode restriction being applied, there are some conventions used in
 ### Assessment
 #### Status
 Derived from common point of identification with unnecessary/temporary hassle omitted  
-1.  finished  
-Mark for completely finished tittle.  
+1.  playing
+Indication that the title completion is on progress.
 2.  halted  
-Mark for suspended/stalled title.  
-3. dropped  
+Indication that the title is suspended/stalled.  
+3.  finished  
+Indicating completely finished tittle.  
+4. dropped  
 Planned to use decomposed to no avail. Common term is used instead.  
 
 #### Node
