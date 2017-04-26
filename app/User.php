@@ -58,9 +58,10 @@ class User extends Authenticatable
 		return $this->hasMany('App\Lineament');
 	}
 
-	protected function isAdmin() {
+	public function isAdmin() {
+		// return true;
 		$role = $this->role;
-		if($role == "admin") {
+		if($role == "administrator") {
 			return true;
 		}
 		return false;
