@@ -66,6 +66,22 @@ class VnController extends Controller
 			return "your another annoying rejection";
 		}
 
+		$this->validate($request, [
+			'title_original' => 'required|string|min:1',
+			'title_romaji' => 'nullable|string',
+			'alias' => 'nullable|string',
+			'hashtag' => 'nullable|string',
+			'developer_id' => 'required|integer',
+			'date_release' => 'date',
+			'image' => 'nullable|string',
+			'vndb_vn_id' => 'nullable|integer',
+			'game_engine' => 'nullable|string',
+			'homepage' => 'nullable|url',
+			'twitter' => 'nullable|string',
+			'erogamescape_game_id' => 'nullable|integer',
+			'vndb_release_id' => 'nullable|integer'
+			]);
+
 		if($allow === true) {
 			$vn = new Vn();
 			$vn->title_original = $request->input('title_original');
@@ -245,6 +261,22 @@ class VnController extends Controller
 		if($request->user()->isCommon()) {
 			$allow = true;
 		}
+
+		$this->validate($request, [
+			'title_original' => 'required|string|min:1',
+			'title_romaji' => 'nullable|string',
+			'alias' => 'nullable|string',
+			'hashtag' => 'nullable|string',
+			'developer_id' => 'required|integer',
+			'date_release' => 'date',
+			'image' => 'nullable|string',
+			'vndb_vn_id' => 'nullable|integer',
+			'game_engine' => 'nullable|string',
+			'homepage' => 'nullable|url',
+			'twitter' => 'nullable|string',
+			'erogamescape_game_id' => 'nullable|integer',
+			'vndb_release_id' => 'nullable|integer'
+			]);
 
 		if($allow == true) {
 			$vn = Vn::find($id);
