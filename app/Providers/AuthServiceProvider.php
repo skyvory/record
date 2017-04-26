@@ -88,18 +88,24 @@ class AuthServiceProvider extends ServiceProvider
 			}
 			return false;
 		});
+
 		
-		
-		// character define
-		$gate->define('store-character', function($user, $character) {
-			return $user->role == "common";
+		$gate->define('read-character', function($user) {
+			return in_array($user->role, ['administrator', 'common', 'guest']);
 		});
-		$gate->define('update-character', function($user, $character) {
-			return $user->role == "common";
+		$gate->define('create-character', function($user) {
+			return in_array($user->role, ['administrator']);
 		});
-		$gate->define('delete-character', function($user, $character) {
-			return $user->role == "common";
+		$gate->define('update-character', function($user) {
+			return in_array($user->role, ['administrator']);
 		});
+		$gate->define('delete-character', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('store-character-image', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+
 
 		// developer define
 		$gate->define('store-developer', function($user, $developer) {

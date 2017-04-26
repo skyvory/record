@@ -34,6 +34,10 @@ class CharacterController extends Controller
 	 */
 	public function getCharacters(Request $request)
 	{
+		if(Gate::denies('read-character')) {
+			abort(403);
+		};
+
 		$vn_id = $request->input('vn_id');
 		$user = JWTAuth::parseToken()->authenticate();
 
@@ -71,6 +75,10 @@ class CharacterController extends Controller
 	 */
 	public function create(Request $request)
 	{
+		if(Gate::denies('create-character')) {
+			abort(403);
+		};
+
 		$character = new Character();
 		$character->vn_id = $request->input('vn_id');
 		$character->name_original = $request->input('name_original');
@@ -89,9 +97,7 @@ class CharacterController extends Controller
 		$character->description = !empty(trim($request->input('description'))) ? $request->input('description') : null;
 		$character->vndb_character_id = $request->input('vndb_character_id');
 		$character->record_status = 1;
-		if(Gate::denies('store-character', $character)) {
-			abort(403);
-		}
+		
 		$exec = $character->save();
 		if($exec) {
 			$url = $request->input('image');
@@ -126,6 +132,10 @@ class CharacterController extends Controller
 	 */
 	public function getCharacter($id)
 	{
+		if(Gate::denies('read-character')) {
+			abort(403);
+		};
+
 		// $character = JWTAuth::parseToken()->authenticate();
 		$character = Character::where('id', $id)->whereIn('record_status', array(1,2))->first();
 		if($character) {
@@ -142,10 +152,11 @@ class CharacterController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		$character = Character::find($id);
-		if(Gate::denies('update-character', $character)) {
+		if(Gate::denies('update-character')) {
 			abort(403);
-		}
+		};
+
+		$character = Character::find($id);
 
 		$url = $request->input('image');
 		$existing_local_filename = $character->local_image;
@@ -197,10 +208,11 @@ class CharacterController extends Controller
 	 */
 	public function delete($id)
 	{
-		$character = Character::find($id);
-		if(Gate::denies('delete-character', $character)) {
+		if(Gate::denies('delete-character')) {
 			abort(403);
-		}
+		};
+
+		$character = Character::find($id);
 		$character->record_status = 3;
 
 		if(!$this->writeHistory($character->id)) {
@@ -248,6 +260,10 @@ class CharacterController extends Controller
 	}
 
 	public function storeImage(Request $request){
+		if(Gate::denies('store-character-image')) {
+			abort(403);
+		};
+
 		$this->validate($request, [
 			'character_id' => 'required|integer|min:1|exists:characters,id',
 			'image' => 'required|file|min:1'
