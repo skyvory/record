@@ -19,6 +19,7 @@ use App\Http\Controllers\ExtensionPlus;
 use App\Http\Controllers\ErogamescapePortal;
 use App\VndbClient\Client;
 use App\Http\Controllers\VndbPortal;
+use Gate;
 
 use Image;
 
@@ -32,6 +33,10 @@ class VnController extends Controller
 
 	function getVns(Request $request)
 	{
+		if(Gate::denies('read-vn')) {
+			abort(403);
+		}
+
 		$user = JWTAuth::parseToken()->authenticate();
 		$per_page = $request->has('limit') ? $request->input('limit') : 10;
 		$search_query = $request->has('filter') ? $request->input('filter') : null;
@@ -58,11 +63,8 @@ class VnController extends Controller
 	 */
 	public function create(Request $request)
 	{
-		if($request->user()->isCommon()) {
-			$allow = true;
-		}
-		else {
-			return "your another annoying rejection";
+		if(Gate::denies('create-vn')) {
+			abort(403);
 		}
 
 		$this->validate($request, [
@@ -79,52 +81,54 @@ class VnController extends Controller
 			'twitter' => 'nullable|string',
 			'erogamescape_game_id' => 'nullable|integer',
 			'vndb_release_id' => 'nullable|integer'
-			]);
+		]);
 
-		if($allow === true) {
-			$vn = new Vn();
-			$vn->title_original = $request->input('title_original');
-			$vn->title_romaji = $request->input('title_romaji');
-			$vn->alias = $request->input('alias');
-			$vn->hashtag = $request->input('hashtag');
-			$vn->developer_id = $request->input('developer_id');
-			$vn->date_release = $request->input('date_release');
-			$vn->image = $request->input('image');
-			$vn->vndb_vn_id = $request->input('vndb_vn_id');
-			$vn->game_engine = $request->input('game_engine');
-			$vn->homepage = $request->input('homepage');
-			$vn->twitter = $request->input('twitter');
-			$vn->erogamescape_game_id = $request->input('erogamescape_game_id');
-			$vn->vndb_release_id = $request->input('vndb_release_id');
-			$exec = $vn->save();
-			if($exec) {
-				// save remote image to local
-				$url = $request->input('image');
-				$local_filename = null;
-				if($url) {
-					$filename = basename($url);
-					$local_filename = $vn->id . "_" . $filename;
-					// using php copy function
-					// copy($url, 'reallocation/' . $filename);
-					// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
-					// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
-					if($this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename)) {
-						// save local filename to database
-						$vn->local_image = $local_filename;
-						$vn->save();
-					}
+		$vn = new Vn();
+		$vn->title_original = $request->input('title_original');
+		$vn->title_romaji = $request->input('title_romaji');
+		$vn->alias = $request->input('alias');
+		$vn->hashtag = $request->input('hashtag');
+		$vn->developer_id = $request->input('developer_id');
+		$vn->date_release = $request->input('date_release');
+		$vn->image = $request->input('image');
+		$vn->vndb_vn_id = $request->input('vndb_vn_id');
+		$vn->game_engine = $request->input('game_engine');
+		$vn->homepage = $request->input('homepage');
+		$vn->twitter = $request->input('twitter');
+		$vn->erogamescape_game_id = $request->input('erogamescape_game_id');
+		$vn->vndb_release_id = $request->input('vndb_release_id');
+		$exec = $vn->save();
+		if($exec) {
+			// save remote image to local
+			$url = $request->input('image');
+			$local_filename = null;
+			if($url) {
+				$filename = basename($url);
+				$local_filename = $vn->id . "_" . $filename;
+				// using php copy function
+				// copy($url, 'reallocation/' . $filename);
+				// using Intervention Image, second parameter of save method is the quality of jpg image (default to 90 if not set)
+				// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+				if($this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename)) {
+					// save local filename to database
+					$vn->local_image = $local_filename;
+					$vn->save();
 				}
-
-				if($request->has('related_vn_id'))
-					$this->relateVn($vn->id, $request->input('related_vn_id'));
-
-				return response()->json(["status" => "success"]);
 			}
+
+			if($request->has('related_vn_id'))
+				$this->relateVn($vn->id, $request->input('related_vn_id'));
+
+			return response()->json(["status" => "success"]);
 		}
 	}
 
 	// Parent means the target vn_id of which the child is going to be attached to. Conscise example is with child id being the VN in update page while the parent id would go to related_vn_id field
 	private function relateVn($parent_vn_id, $child_vn_id) {
+		if(Gate::denies('relate-vn')) {
+			abort(403);
+		}
+
 		if(!empty($parent_vn_id) && !empty($child_vn_id)) {
 			
 			$distinct_group_count = VnGroupRelation::where('vn_id', $parent_vn_id)->orWhere('vn_id', $child_vn_id)->groupBy('vn_group_id')->get()->count();
@@ -174,6 +178,10 @@ class VnController extends Controller
 
 	public function removeRelation(Request $request)
 	{
+		if(Gate::denies('remove-vn-relation')) {
+			abort(403);
+		}
+
 		$this->validate($request, [
 			'vn_group_id' => 'required|integer|min:1',
 			'vn_id' => 'required|integer|min:1'
@@ -202,6 +210,10 @@ class VnController extends Controller
 	 */
 	public function getVn($id)
 	{
+		if(Gate::denies('read-vn')) {
+			abort(403);
+		};
+
 		try {
 			$vn = Vn::find($id);
 			$vn_simplified = [];
@@ -257,8 +269,8 @@ class VnController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		if($request->user()->isCommon()) {
-			$allow = true;
+		if(Gate::denies('update-vn')) {
+			abort(403);
 		}
 
 		$this->validate($request, [
@@ -277,43 +289,41 @@ class VnController extends Controller
 			'vndb_release_id' => 'nullable|integer'
 			]);
 
-		if($allow == true) {
-			$vn = Vn::find($id);
+		$vn = Vn::find($id);
 
-			$url = $request->input('image');
-			$existing_local_filename = $vn->local_image;
-			$local_filename = "";
-			if($url) {
-				$filename = basename($url);
-				$local_filename = $id . "_" . $filename;
-				if($local_filename != $existing_local_filename) {
-					// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
-					$this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename);
-				}
+		$url = $request->input('image');
+		$existing_local_filename = $vn->local_image;
+		$local_filename = "";
+		if($url) {
+			$filename = basename($url);
+			$local_filename = $id . "_" . $filename;
+			if($local_filename != $existing_local_filename) {
+				// Image::make($url)->save('reallocation/cover/' . $local_filename, 100);
+				$this->saveRemoteImage($url, 'reallocation/cover/' . $local_filename);
 			}
+		}
 
-			$vn->title_original = $request->has('title_original') ? $request->input('title_original') : null;
-			$vn->title_romaji = $request->has('title_romaji') ? $request->input('title_romaji') : null;
-			$vn->alias = $request->has('alias') ? $request->input('alias') : null;
-			$vn->hashtag = $request->has('hashtag') ? $request->input('hashtag') : null;
-			$vn->developer_id = $request->has('developer_id') ? $request->input('developer_id') : null;
-			$vn->image = $request->has('image') ? $request->input('image') : null;
-			$vn->local_image = $local_filename;
-			$vn->date_release = $request->has('date_release') ? $request->input('date_release') : null;
-			$vn->vndb_vn_id = $request->has('vndb_vn_id') ? $request->input('vndb_vn_id') : null;
-			$vn->game_engine = $request->has('game_engine') ? $request->input('game_engine') : null;
-			$vn->homepage = $request->has('homepage') ? $request->input('homepage') : null;
-			$vn->twitter = $request->has('twitter') ? $request->input('twitter') : null;
-			$vn->erogamescape_game_id = $request->has('erogamescape_game_id') ? $request->input('erogamescape_game_id') : null;
-			$vn->vndb_release_id = $request->has('vndb_release_id') ? $request->input('vndb_release_id') : null;
-			$exec = $vn->save();
+		$vn->title_original = $request->has('title_original') ? $request->input('title_original') : null;
+		$vn->title_romaji = $request->has('title_romaji') ? $request->input('title_romaji') : null;
+		$vn->alias = $request->has('alias') ? $request->input('alias') : null;
+		$vn->hashtag = $request->has('hashtag') ? $request->input('hashtag') : null;
+		$vn->developer_id = $request->has('developer_id') ? $request->input('developer_id') : null;
+		$vn->image = $request->has('image') ? $request->input('image') : null;
+		$vn->local_image = $local_filename;
+		$vn->date_release = $request->has('date_release') ? $request->input('date_release') : null;
+		$vn->vndb_vn_id = $request->has('vndb_vn_id') ? $request->input('vndb_vn_id') : null;
+		$vn->game_engine = $request->has('game_engine') ? $request->input('game_engine') : null;
+		$vn->homepage = $request->has('homepage') ? $request->input('homepage') : null;
+		$vn->twitter = $request->has('twitter') ? $request->input('twitter') : null;
+		$vn->erogamescape_game_id = $request->has('erogamescape_game_id') ? $request->input('erogamescape_game_id') : null;
+		$vn->vndb_release_id = $request->has('vndb_release_id') ? $request->input('vndb_release_id') : null;
+		$exec = $vn->save();
 
-			if($request->has('related_vn_id'))
-				$this->relateVn($vn->id, $request->input('related_vn_id'));
+		if($request->has('related_vn_id'))
+			$this->relateVn($vn->id, $request->input('related_vn_id'));
 
-			if($exec) {
-				return response()->json(["status" => "success"]);
-			}
+		if($exec) {
+			return response()->json(["status" => "success"]);
 		}
 
 	}
@@ -326,24 +336,26 @@ class VnController extends Controller
 	 */
 	public function delete(Request $request, $id)
 	{
-		if($request->user()->isCommon()) {
-			$allow = true;
+		if(Gate::denies('delete-vn')) {
+			abort(403);
 		}
 
-		if($allow == true) {
-			$vn = Vn::find($id);
-			if($vn) {
-				$vn->record_status = 3;
-				$exec = $vn->save();
-				if($exec) {
-					return response()->json(["status" => "success"]);
-				}
+		$vn = Vn::find($id);
+		if($vn) {
+			$vn->record_status = 3;
+			$exec = $vn->save();
+			if($exec) {
+				return response()->json(["status" => "success"]);
 			}
 		}
 	}
 
 	public function refreshCover($id)
 	{
+		if(Gate::denies('refresh-vn-cover')) {
+			abort(403);
+		}
+
 		$vn = Vn::find($id);
 
 		$url = $vn->image;
@@ -363,6 +375,10 @@ class VnController extends Controller
 	}
 
 	public function storeScreenshot(Request $request){
+		if(Gate::denies('store-screenshot')) {
+			abort(403);
+		}
+
 		$this->validate($request, [
 			'vn_id' => 'required|integer|min:1|exists:vn,id',
 			'screen_category' => 'required|integer',
@@ -433,6 +449,10 @@ class VnController extends Controller
 
 	public function getScreenshots($id)
 	{
+		if(Gate::denies('read-screenshot')) {
+			abort(403);
+		}
+
 		$screenshots = Screen::where('vn_id', $id)->where('status', 1)->get();
 		$data = array();
 		foreach ($screenshots as $shot) {
@@ -454,6 +474,10 @@ class VnController extends Controller
 
 	public function removeScreenshot($id)
 	{
+		if(Gate::denies('remove-screenshot')) {
+			abort(403);
+		}
+
 		$screenshot = Screen::find($id);
 
 		// Move file to recycle bin
@@ -472,6 +496,10 @@ class VnController extends Controller
 
 	public function updateScreenshotProperty(Request $request, $id)
 	{
+		if(Gate::denies('update-screenshot-property')) {
+			abort(403);
+		}
+
 		$this->validate($request, [
 			'descriiption' => 'string|nullable'
 		]);
@@ -499,6 +527,10 @@ class VnController extends Controller
 	}
 
 	public function searchGame(Request $request, $search_query) {
+		if(Gate::denies('search-game')) {
+			abort(403);
+		}
+
 		$egs_search_result = $this->searchEroge(array('search_query' => $search_query));
 
 		$vndb_username_hash = $request->input('vndb_username_hash');

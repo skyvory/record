@@ -26,14 +26,47 @@ class AuthServiceProvider extends ServiceProvider
 	{
 		parent::registerPolicies($gate);
 
-		//
 		// $gate->before(function($user, $ability) {
 		// 	if($user->isAdmin()) {
 		// 		return true;
 		// 	}
 		// });
-		$gate->define('add-vn', function($user, $vn) {
-			return $user->role == "common";
+
+		$gate->define('read-vn', function($user) {
+			return in_array($user->role, ['administrator', 'common', 'guest']);
+		});
+		$gate->define('create-vn', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('update-vn', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('delete-vn', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('relate-vn', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('remove-vn-relation', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('refresh-vn-cover', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('store-screenshot', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('read-screenshot', function($user) {
+			return in_array($user->role, ['administrator', 'common']);
+		});
+		$gate->define('remove-screenshot', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('update-screenshot-property', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+		$gate->define('search-game', function($user) {
+			return in_array($user->role, ['administrator']);
 		});
 
 		// assessment define
