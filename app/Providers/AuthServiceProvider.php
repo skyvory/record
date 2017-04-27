@@ -134,7 +134,7 @@ class AuthServiceProvider extends ServiceProvider
 			return false;
 		});
 		$gate->define('delete-lineament', function($user, $lineament) {
-			if($user->role == "common" && $user->id == $lineament->user_id) {
+			if(in_array($user->role, ['administrator', 'common']) && $user->id == $lineament->user_id) {
 				return true;
 			}
 			return false;
