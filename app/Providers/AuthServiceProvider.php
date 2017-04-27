@@ -121,52 +121,6 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 
-		// note define
-		$gate->define('index-note', function($user, $note) {
-			return $user->role == "common";
-		});
-		$gate->define('show-note', function($user, $note) {
-			return $user->role == "common";
-		});
-		$gate->define('store-note', function($user, $note) {
-			return $user->role == "common";
-		});
-		$gate->define('update-note', function($user, $note) {
-			if($user->role == "common" && $user->id == $note->user_id) {
-				return true;
-			}
-			return false;
-		});
-		$gate->define('delete-note', function($user, $note) {
-			if($user->role == "common" && $user->id == $note->user_id) {
-				return true;
-			}
-			return false;
-		});
-
-		// stock define
-		$gate->define('index-stock', function($user, $stock) {
-			return $user->role == "common";
-		});
-		$gate->define('show-stock', function($user, $stock) {
-			return $user->role == "common";
-		});
-		$gate->define('store-stock', function($user, $stock) {
-			return $user->role == "common";
-		});
-		$gate->define('update-stock', function($user, $stock) {
-			if($user->role == "common" && $user->id == $stock->user_id) {
-				return true;
-			}
-			return false;
-		});
-		$gate->define('delete-stock', function($user, $stock) {
-			if($user->role == "common" && $user->id == $stock->user_id) {
-				return true;
-			}
-			return false;
-		});
-
 		// lineament define
 		$gate->define('index-lineament', function($user, $lineament) {
 			return $user->role == "common";
