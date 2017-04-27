@@ -28,13 +28,14 @@ class LineamentController extends Controller
 	 */
 	public function getLineaments(Request $request)
 	{
+		if(Gate::denies('read-lineament')) {
+			abort(403);
+		};
+
 		$user = JWTAuth::parseToken()->authenticate();
 		$vn_id = $request->input('vn_id');
 		if($vn_id != null) {
 			$lineament = Lineament::leftJoin('characters', 'characters.id', '=', 'lineaments.character_id')->select('characters.*', 'lineaments.id as lineament_id', 'lineaments.character_id', 'lineaments.note', 'lineaments.mark')->where('user_id', $user->id)->where('vn_id', $vn_id)->orderBy('characters.created_at')->get();
-			if(Gate::denies('index-lineament', $lineament)) {
-				abort(403);
-			}
 			for($i = 0; $i < count($lineament); $i++) {
 				$lineament[$i]->note = $this->decodeInput($lineament[$i]->note);
 			}
@@ -58,6 +59,10 @@ class LineamentController extends Controller
 	 */
 	public function create(Request $request)
 	{
+		if(Gate::denies('create-lineament')) {
+			abort(403);
+		};
+
 		$check = Lineament::where('user_id', $request->user()->id)->where('character_id', $request->input('character_id'))->first();
 		if($check) {
 			return response()->json(['status' => 'lineament is already exist, use update method to update']);
@@ -67,9 +72,6 @@ class LineamentController extends Controller
 		$lineament->character_id = $request->input('character_id');
 		$lineament->note = $this->decodeInput($request->input('note'));
 		$lineament->mark = $request->input('mark');
-		if(Gate::denies('store-lineament', $lineament)) {
-			abort(403);
-		}
 		$exec = $lineament->save();
 		if($exec) {
 			return response()->json($lineament);
@@ -84,6 +86,10 @@ class LineamentController extends Controller
 	 */
 	public function getLineament($id)
 	{
+		if(Gate::denies('read-lineament')) {
+			abort(403);
+		};
+
 		$user = JWTAuth::parseToken()->authenticate();
 		$lineament = Lineament::where('user_id', $user->id)->find($id);
 		if(Gate::denies('show-lineament', $lineament)) {

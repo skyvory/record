@@ -121,18 +121,14 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 
-		// lineament define
-		$gate->define('index-lineament', function($user, $lineament) {
-			return $user->role == "common";
+		$gate->define('read-lineament', function($user) {
+			return in_array($user->role, ['administrator', 'common']);
 		});
-		$gate->define('show-lineament', function($user, $lineament) {
-			return $user->role == "common";
-		});
-		$gate->define('store-lineament', function($user, $lineament) {
-			return $user->role == "common";
+		$gate->define('create-lineament', function($user) {
+			return in_array($user->role, ['administrator', 'common']);
 		});
 		$gate->define('update-lineament', function($user, $lineament) {
-			if($user->role == "common" && $user->id == $lineament->user_id) {
+			if(in_array($user->role, ['administrator', 'common']) && $user->id == $lineament->user_id) {
 				return true;
 			}
 			return false;
