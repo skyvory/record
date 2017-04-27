@@ -110,14 +110,12 @@ class LineamentController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		// $user = JWTAuth::parseToken()->authenticate();
-		$lineament = Lineament::where('user_id', $request->user()->id)->where('character_id', $request->input('character_id'))->first();
-		if($lineament->id != $id) {
-			return response()->json(['status' => 'Database fatal conflict! Multiple lineaments on a character detected']);
-		}
+		$lineament = Lineament::where('user_id', $request->user()->id)->where('character_id', $request->input('character_id'))->where('id', $id)->first();
+		
 		if(Gate::denies('update-lineament', $lineament)) {
 			abort(403);
 		}
+		
 		$lineament->note = $this->decodeInput($request->input('note'));
 		$lineament->mark = $request->input('mark');
 
