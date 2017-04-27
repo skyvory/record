@@ -107,16 +107,19 @@ class AuthServiceProvider extends ServiceProvider
 		});
 
 
-		// developer define
-		$gate->define('store-developer', function($user, $developer) {
-			return $user->role == "common";
+		$gate->define('read-developer', function($user) {
+			return in_array($user->role, ['administrator', 'common', 'guest']);
 		});
-		$gate->define('update-developer', function($user, $developer) {
-			return $user->role == "common";
+		$gate->define('create-developer', function($user) {
+			return in_array($user->role, ['administrator']);
 		});
-		$gate->define('delete-developer', function($user, $developer) {
-			return $user->role == "common";
+		$gate->define('update-developer', function($user) {
+			return in_array($user->role, ['administrator']);
 		});
+		$gate->define('delete-developer', function($user) {
+			return in_array($user->role, ['administrator']);
+		});
+
 
 		// note define
 		$gate->define('index-note', function($user, $note) {
