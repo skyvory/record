@@ -93,4 +93,9 @@ use Illuminate\Http\Request;
 
 	Route::post('/portal/search/{search_query}', 'VnController@searchGame');
 	Route::post('/setting/vndb', 'SettingController@storeVndbAuthHash');
+
+	Route::group(['prefix' => 'twitter'], function() {
+		Route::post('/status', 'TweetController@postStatus');
+		Route::get('/check', 'TweetController@check');
+	});
 // });
