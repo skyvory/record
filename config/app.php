@@ -177,6 +177,7 @@ return [
 		*/
 		Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
 		Intervention\Image\ImageServiceProvider::class,
+		Thujohn\Twitter\TwitterServiceProvider::class,
 
 	],
 
@@ -231,6 +232,7 @@ return [
 		'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
 		'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
 		'Image' => Intervention\Image\Facades\Image::class,
+		'Twitter' => Thujohn\Twitter\Facades\Twitter::class,
 
 	],
 
