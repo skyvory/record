@@ -14,3 +14,17 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/twitterauth/login', 'TwitterAuthController@login');
+Route::get('/twitterauth/callback', [
+	'as' => 'twitterauth.callback',
+	'uses' => 'TwitterAuthController@callback'
+	]);
+Route::get('/twitterauth/error', 'TwitterAuthController@error');
+Route::get('/twitterauth/logout', 'TwitterAuthController@logout');
+
+// Route::get('/twitter/tweet/{tweet}', 'TweetController@tweet');
+// Route::get('/twitter/check', [
+// 	'as' => 'twitter.check',
+// 	'uses' => 'TweetController@check'
+// 	]);
