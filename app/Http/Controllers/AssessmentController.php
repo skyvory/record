@@ -190,9 +190,6 @@ class AssessmentController extends Controller
 		$assessment->savable = $savable;
 		$assessment->status = $request->input('status');
 		$assessment->record_status = 1;
-		if(Gate::denies('store-assessment', $assessment)) {
-			abort(403);
-		}
 		$exec = $assessment->save();
 		$assessment->vndb_vn_id = Assessment::leftJoin('vn', 'vn.id', '=', 'assessments.vn_id')->select('vn.vndb_vn_id')->where('assessments.id', $assessment->id)->first()->vndb_vn_id;
 		if($exec) {
