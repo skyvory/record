@@ -92,12 +92,6 @@ class TwitterAuthController extends Controller
 				$credential->twitter_x_auth_expires = $token['x_auth_expires'];
 
 				if($credential->save()) {
-					// $stat = Twitter::postTweet(['status' => 'init2', 'format' => 'json']);
-					// print_r($stat);
-					// echo "<br>";
-					// echo "<br>";
-					print_r(Session::all());
-					return;
 					return view('twitter');
 				}
 
