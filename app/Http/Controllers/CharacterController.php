@@ -55,7 +55,7 @@ class CharacterController extends Controller
 
 			$data = array();
 			foreach ($character as $chara) {
-				$chara['local_url'] = url('/reallocation/character') .'/' . $chara['local_image'];
+				$chara['local_image_url'] = url('/reallocation/character') .'/' . $chara['local_image'];
 				$data[] = $chara;
 			}
 
@@ -312,7 +312,7 @@ class CharacterController extends Controller
 			$exec = $character->save();
 
 			// Include local URL to returned response
-			$character['local_url'] = url('/reallocation/character') . '/' . $local_filename;
+			$character['local_image_url'] = url('/reallocation/character') . '/' . $local_filename;
 
 			if($exec)
 				return response()->json(['data' => $character]);
