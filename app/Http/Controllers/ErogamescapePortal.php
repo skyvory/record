@@ -30,7 +30,7 @@ trait ErogamescapePortal
 
 		$ch = curl_init();
 		$agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0';
-		$egs_sql_url = 'http://erogamescape.dyndns.org/~ap2/ero/toukei_kaiseki/sql_for_erogamer_form.php';
+		$egs_sql_url = 'https://erogamescape.dyndns.org/~ap2/ero/toukei_kaiseki/sql_for_erogamer_form.php';
 
 		curl_setopt($ch, CURLOPT_URL, $egs_sql_url);
 		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
