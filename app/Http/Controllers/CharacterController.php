@@ -118,6 +118,9 @@ class CharacterController extends Controller
 					$character->local_image = $local_filename;
 					$character->save();
 				}
+
+				// Include local URL to returned response
+				$character->local_image_url = url('/reallocation/character') . '/' . $local_filename;
 			}
 
 			return response()->json($character);
