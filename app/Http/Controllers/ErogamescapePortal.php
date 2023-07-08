@@ -12,6 +12,10 @@ trait ErogamescapePortal
 			$query_to_retrieve = $this->parseParamToQuery($params);
 			$html_content = $this->retrievePageContent($query_to_retrieve);
 			$this->writeHtmlToDisk($html_content, storage_path('/app/egs-sql-html-log/'), 'egs_sql_');
+			// return empty array result if site couldn't be reached (erogamescape, like many japanese site, is unreliable and often down without reason)
+			if($html_content == "") {
+				return [];
+			}
 			$data = $this->extractEssenceFromHtml($html_content);
 			return $data;
 		}
@@ -38,6 +42,7 @@ trait ErogamescapePortal
 		curl_setopt($ch, CURLOPT_POST,1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
 		$result = curl_exec($ch);
 

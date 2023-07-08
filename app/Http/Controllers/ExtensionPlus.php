@@ -35,7 +35,7 @@ trait ExtensionPlus
 			curl_setopt($ch, CURLOPT_VERBOSE, 1);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 			// curl_setopt($ch, CURLOPT_FILE, $fp);  
 			// curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			// curl_setopt($ch, CURLOPT_TIMEOUT, 1000);  
