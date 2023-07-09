@@ -89,6 +89,7 @@ use Illuminate\Http\Request;
 		Route::post('/release2', 'VndbController@release2');
 		Route::post('/character', 'VndbController@character');
 		Route::post('/setVote', 'VndbController@setVote');
+		Route::post('/setVote2', 'VndbController@setVote2');
 		Route::post('/setStatus', 'VndbController@setStatus');
 	});
 
