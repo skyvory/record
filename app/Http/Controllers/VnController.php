@@ -536,7 +536,8 @@ class VnController extends Controller
 		$vndb_username_hash = $request->input('vndb_username_hash');
 		$vndb_password_hash = $request->input('vndb_password_hash');
 		$vndb_auth = app('App\Http\Controllers\SettingController')->retrieveVndbAuth($vndb_username_hash, $vndb_password_hash);
-		$vndb_search_result = $this->searchVn($vndb_auth, array('search_query' => $search_query));
+		// $vndb_search_result = $this->searchVn($vndb_auth, array('search_query' => $search_query));
+		$vndb_search_result = $this->searchVn2($vndb_auth, array('search_query' => $search_query));
 	
 		$compilation = array(
 			'data' => array(

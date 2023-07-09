@@ -87,4 +87,57 @@ trait VndbPortal
 			return $result_json;
 		}
 	}
+
+	protected function searchVn2($auth, $params) {
+		if(sizeof($params)) {
+			if(!isset($params['search_query'])) {
+				return 0;
+			}
+			$command = 'get vn basic,details,anime,relations,tags,stats (search ~ "' . $params['search_query'] . '")';
+			$result_object = $this->requestToVndb2($auth, $params['search_query']);
+			$result_json = json_decode($result_object, true);
+			$result_json = $result_json['results'];
+			return $result_json;
+		}
+	}
+
+	protected function requestToVndb2($auth, $command) {
+		// 4efy-yn1uh-aqode-rg1k-x4u35-rqqme-475p
+		$postvars = array(
+			"filters" => ["search", "=", $command],
+			"fields" => "id, title, alttitle, titles.title, titles.latin, titles.official, titles.main, aliases, released, platforms, image.url, description",
+			"results"=> 50,
+			"page"=> 1,
+			"count"=> true
+		);
+
+		$authorization = "Authorization: Token 4efy-yn1uh-aqode-rg1k-x4u35-rqqme-475p";
+
+		$ch = curl_init();
+		$agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0';
+		$target_url = 'https://api.vndb.org/kana/vn';
+
+		curl_setopt($ch, CURLOPT_URL, $target_url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+		// curl_setopt($ch, CURLOPT_HEADER, 1);
+		curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'POST' );
+		// curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postvars));
+		// curl_setopt($ch, CURLOPT_POSTFIELDS, '"filters": ["id", "=", "v17"]');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // response as a string
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+		$result = curl_exec($ch);
+
+		if (curl_errno($ch)) {
+			print curl_error($ch);
+		}
+
+		// $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		// curl_close($ch);
+
+		return $result;
+
+	}
 }
