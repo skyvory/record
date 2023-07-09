@@ -45,6 +45,51 @@ class VndbController extends Controller
 		$res_after = json_decode(json_encode($res), true);
 		return response()->json($res_after);
 	}
+
+	public function release2(Request $request) {
+		$vndb_token = $request->input('vndb_token');
+		$vndb_vn_id = $request->input('vndb_vn_id');
+
+		$postvars = array(
+			"filters" => ["vn", "=", ["id", "=", "v40520"]],
+			"fields" => "id, title, alttitle, languages.title, languages.main, platforms, vns.rtype, producers.developer, producers.publisher, released, minage, patch, freeware, uncensored, official, has_ero, resolution, engine, voiced, notes, gtin, catalog, extlinks.url, extlinks.label, extlinks.name, extlinks.id, producers.name, producers.original, producers.aliases, producers.lang, producers.type, producers.description",
+			"sort"=> "id",
+			"results"=> 50,
+			"page"=> 1,
+			"count"=> true
+		);
+
+		$authorization = "Authorization: Token " . $vndb_token;
+
+		$ch = curl_init();
+		$agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0';
+		$target_url = 'https://api.vndb.org/kana/release';
+
+		curl_setopt($ch, CURLOPT_URL, $target_url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+		curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'POST' );
+		// curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postvars));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // response as a string
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+		
+		$result = curl_exec($ch);
+		// print $result;
+
+		if (curl_errno($ch)) {
+			print curl_error($ch);
+		}
+
+
+		$result_json = json_decode($result, true);
+		// $result_json = $result_json['results'];
+		// return $result_json;
+		// return response()->json(array());
+		return response()->json(['data' => $result_json]);
+	}
+
 	public function character(Request $request) {
 		$vndb_username_hash = $request->input('vndb_username_hash');
 		$vndb_password_hash = $request->input('vndb_password_hash');
