@@ -95,6 +95,7 @@ use Illuminate\Http\Request;
 	});
 
 	Route::post('/portal/search/{search_query}', 'VnController@searchGame');
+	Route::post('/portal/search2/{search_query}', 'VnController@searchGame2');
 	Route::post('/setting/vndb', 'SettingController@storeVndbAuthHash');
 
 	Route::group(['prefix' => 'twitter'], function() {

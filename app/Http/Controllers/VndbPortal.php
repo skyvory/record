@@ -88,21 +88,19 @@ trait VndbPortal
 		}
 	}
 
-	protected function searchVn2($auth, $params) {
+	protected function searchVn2($vndb_token, $params) {
 		if(sizeof($params)) {
 			if(!isset($params['search_query'])) {
 				return 0;
 			}
-			$command = 'get vn basic,details,anime,relations,tags,stats (search ~ "' . $params['search_query'] . '")';
-			$result_object = $this->requestToVndb2($auth, $params['search_query']);
+			$result_object = $this->requestToVndb2($vndb_token, $params['search_query']);
 			$result_json = json_decode($result_object, true);
 			$result_json = $result_json['results'];
 			return $result_json;
 		}
 	}
 
-	protected function requestToVndb2($auth, $command) {
-		// 4efy-yn1uh-aqode-rg1k-x4u35-rqqme-475p
+	protected function requestToVndb2($vndb_token, $command) {
 		$postvars = array(
 			"filters" => ["search", "=", $command],
 			"fields" => "id, title, alttitle, titles.title, titles.latin, titles.official, titles.main, aliases, released, platforms, image.url, description",
@@ -111,7 +109,7 @@ trait VndbPortal
 			"count"=> true
 		);
 
-		$authorization = "Authorization: Token 4efy-yn1uh-aqode-rg1k-x4u35-rqqme-475p";
+		$authorization = "Authorization: Token " . $vndb_token;
 
 		$ch = curl_init();
 		$agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0';

@@ -547,4 +547,23 @@ class VnController extends Controller
 		);
 		return response()->json($compilation);
 	}
+
+	public function searchGame2(Request $request, $search_query) {
+		if(Gate::denies('search-game')) {
+			abort(403);
+		}
+
+		$egs_search_result = $this->searchEroge(array('search_query' => $search_query));
+
+		$vndb_token = $request->input('vndb_token');
+		$vndb_search_result = $this->searchVn2($vndb_token, array('search_query' => $search_query));
+	
+		$compilation = array(
+			'data' => array(
+				'egs' => $egs_search_result,
+				'vndb' => $vndb_search_result
+			)
+		);
+		return response()->json($compilation);
+	}
 }
