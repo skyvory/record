@@ -170,6 +170,65 @@ class VndbController extends Controller
 		return response()->json($res_after);
 	}
 
+	public function setStatus2(Request $request) {
+		$vndb_token = $request->input('vndb_token');
+		$vndb_id = $request->input('vndb_id');
+		$vndb_status = null;
+		$vndb_status = $request->input('status') == 'playing' ? 1 : $vndb_status;
+		$vndb_status = $request->input('status') == 'finished' ? 2 : $vndb_status;
+		$vndb_status = $request->input('status') == 'stalled' ? 3 : $vndb_status;
+		$vndb_status = $request->input('status') == 'dropped' ? 4 : $vndb_status;
+
+		$available_label_index = [1,2,3,4];
+		// Remove selected index from array
+		// $label_to_unset = array_diff($available_label_index, [$vndb_status]);
+
+		$postvars = array(
+			"labels_unset" => $available_label_index
+		);
+
+		$ch = curl_init();
+		$agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0';
+		$target_url = 'https://api.vndb.org/kana/ulist/v' . $vndb_id;
+		$authorization = "Authorization: Token " . $vndb_token;
+
+		curl_setopt($ch, CURLOPT_URL, $target_url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postvars));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // response as a string
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		
+		$result = curl_exec($ch);
+
+		// Separate curl to set status
+		$postvars = array(
+			"labels_set" => [$vndb_status]
+		);
+
+		$ch = curl_init();
+		$agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0';
+		$target_url = 'https://api.vndb.org/kana/ulist/v' . $vndb_id;
+		$authorization = "Authorization: Token " . $vndb_token;
+
+		curl_setopt($ch, CURLOPT_URL, $target_url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postvars));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // response as a string
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		
+		$result = curl_exec($ch);
+
+		if (curl_errno($ch)) {
+			print curl_error($ch);
+		}
+
+		return response()->json(['status' => "success"]);
+	}
+
 	
 	/**
 	 * Display a listing of the resource.
