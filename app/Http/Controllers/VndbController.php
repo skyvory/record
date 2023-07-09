@@ -105,6 +105,44 @@ class VndbController extends Controller
 		return response()->json($res_after);
 	}
 
+	public function character2(Request $request) {
+		$vndb_token = $request->input('vndb_token');
+		$vndb_vn_id = $request->input('vndb_vn_id');
+
+		$postvars = array(
+			"filters" => ["vn", "=", ["id", "=", $vndb_vn_id]],
+			"fields" => "id, name, original, aliases, description, image.id, image.url, image.dims, image.sexual, image.violence, image.votecount, blood_type, height, weight, bust, waist, hips, cup, age, birthday, sex, vns.spoiler, vns.role, traits.spoiler, traits.lie",
+			"sort"=> "id",
+			"results"=> 100,
+			"page"=> 1,
+			"count"=> true
+		);
+		
+		$ch = curl_init();
+		$agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0';
+		$target_url = 'https://api.vndb.org/kana/character';
+		$authorization = "Authorization: Token " . $vndb_token;
+
+		curl_setopt($ch, CURLOPT_URL, $target_url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postvars));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // response as a string
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		
+		$result = curl_exec($ch);
+
+		if (curl_errno($ch)) {
+			print curl_error($ch);
+		}
+
+		$result_json = json_decode($result, true);
+		return response()->json(['data' => $result_json]);
+		
+		
+	}
+
 	public function setVote(Request $request) {
 		$vndb_username_hash = $request->input('vndb_username_hash');
 		$vndb_password_hash = $request->input('vndb_password_hash');
