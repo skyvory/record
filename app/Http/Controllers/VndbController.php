@@ -51,7 +51,7 @@ class VndbController extends Controller
 		$vndb_vn_id = $request->input('vndb_vn_id');
 
 		$postvars = array(
-			"filters" => ["vn", "=", ["id", "=", "v40520"]],
+			"filters" => ["vn", "=", ["id", "=", $vndb_vn_id]],
 			"fields" => "id, title, alttitle, languages.title, languages.main, platforms, vns.rtype, producers.developer, producers.publisher, released, minage, patch, freeware, uncensored, official, has_ero, resolution, engine, voiced, notes, gtin, catalog, extlinks.url, extlinks.label, extlinks.name, extlinks.id, producers.name, producers.original, producers.aliases, producers.lang, producers.type, producers.description",
 			"sort"=> "id",
 			"results"=> 50,
